@@ -6,6 +6,7 @@
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/bazaar.php*
 // @grant        none
+// @updateURL    https://raw.githubusercontent.com/sulsay/torn/master/user-scripts/bazaar-item-market-link.js
 // ==/UserScript==
 
 (async function () {
