@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bazaar Item Market Link
 // @namespace    https://github.com/sulsay/torn
-// @version      1.0
+// @version      1.1
 // @description  Adds link "View in item market" on expanded items in bazaar
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/bazaar.php*
