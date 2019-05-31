@@ -1,19 +1,18 @@
 // ==UserScript==
 // @name         Bazaar Item Market Link
 // @namespace    https://github.com/sulsay/torn
-// @version      1.1
+// @version      1.2
 // @description  Adds link "View in item market" on expanded items in bazaar
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/bazaar.php*
 // @grant        none
-// @updateURL    https://raw.githubusercontent.com/sulsay/torn/master/user-scripts/bazaar-item-market-link.js
 // ==/UserScript==
 
 (async function () {
     const itemsList = await truthy(() => document.querySelector('.bazaar-main-wrap .items-list'));
     new MutationObserver(insertItemPageLinkOnItemExpanded.bind(null, itemsList)).observe(itemsList, {childList: true});
 
-    console.log('AWH: testing auto update webhook');
+    console.log('AWH: testing auto update webhook v1.2');
 })();
 
 function insertItemPageLinkOnItemExpanded(itemsList, mutations) {
