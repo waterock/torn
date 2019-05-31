@@ -1,17 +1,18 @@
 // ==UserScript==
 // @name         Bazaar Item Market Link
-// @homepage     https://github.com/sulsay/torn
+// @namespace    https://github.com/sulsay/torn
 // @version      1.0
 // @description  Adds link "View in item market" on expanded items in bazaar
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/bazaar.php*
 // @grant        none
-// @require      https://arsonwarehouse.com/js/functions/truthy.js
 // ==/UserScript==
 
 (async function () {
     const itemsList = await truthy(() => document.querySelector('.bazaar-main-wrap .items-list'));
     new MutationObserver(insertItemPageLinkOnItemExpanded.bind(null, itemsList)).observe(itemsList, {childList: true});
+
+    console.log('AWH: testing auto update webhook');
 })();
 
 function insertItemPageLinkOnItemExpanded(itemsList, mutations) {
@@ -45,4 +46,18 @@ async function insertItemPageLink(expandedItemLi, itemInfoLi) {
     anchor.style.textDecoration = 'none';
     anchor.innerText = 'View in item market';
     shortDescriptionDiv.appendChild(anchor);
+}
+
+function truthy(handler) {
+    return new Promise(resolve => {
+        const resolveIfHandlerReturnsTruthy = () => {
+            let result = handler();
+            if (result) {
+                resolve(result);
+            } else {
+                setTimeout(resolveIfHandlerReturnsTruthy, 100);
+            }
+        };
+        resolveIfHandlerReturnsTruthy();
+    });
 }
