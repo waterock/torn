@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bazaar Item Market Link
 // @namespace    https://github.com/sulsay/torn
-// @version      1.0
+// @version      1.1
 // @description  Adds link "View in item market" on expanded items in bazaar
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/bazaar.php*
@@ -10,40 +10,47 @@
 
 (async function () {
     const itemsList = await truthy(() => document.querySelector('.bazaar-main-wrap .items-list'));
-    new MutationObserver(insertItemPageLinkOnItemExpanded.bind(null, itemsList)).observe(itemsList, {childList: true});
+    new ItemMarketLinkInserter().bindTo(itemsList);
 })();
 
-function insertItemPageLinkOnItemExpanded(itemsList, mutations) {
-    const addedItemInfoMutation = mutations.find(mutation => {
-        return mutation.addedNodes.length === 1 && mutation.addedNodes[0].classList.contains('show-item-info');
-    });
-    if (! addedItemInfoMutation) {
-        return;
+class ItemMarketLinkInserter {
+    bindTo(itemsList) {
+        new MutationObserver(this._insertLinkOnItemExpanded.bind(this, itemsList))
+            .observe(itemsList, {childList: true});
     }
+    _insertLinkOnItemExpanded(itemsList, mutations) {
+        const addedItemInfoLi = this._getNewlyOpenedItemInfoPane(mutations);
+        if (addedItemInfoLi === null) {
+            return;
+        }
+        this._insertLink(
+            Array.from(itemsList.children).find(li => li.classList.contains('act')),
+            addedItemInfoLi
+        );
+    }
+    async _insertLink(expandedItemLi, itemInfoLi) {
+        const expandedItemId = expandedItemLi.querySelector('[itemid]').getAttribute('itemid');
 
-    insertItemPageLink(
-        Array.from(itemsList.children).find(li => li.classList.contains('act')),
-        addedItemInfoMutation.addedNodes[0]
-    );
-}
+        const itemInfoSpan = await truthy(() => itemInfoLi.querySelector('.item-cont .item-wrap .info-msg'));
+        const shortDescriptionDiv = itemInfoSpan.firstElementChild;
 
-async function insertItemPageLink(expandedItemLi, itemInfoLi) {
-    const expandedItemId = expandedItemLi.querySelector('[itemid]').getAttribute('itemid');
-
-    const itemInfoSpan = await truthy(() => itemInfoLi.querySelector('.item-cont .item-wrap .info-msg'));
-    const shortDescriptionDiv = itemInfoSpan.firstElementChild;
-
-    const anchor = document.createElement('a');
-    anchor.href = 'https://www.torn.com/imarket.php#/p=shop&type=' + expandedItemId;
-    anchor.style.paddingLeft = '1rem';
-    anchor.style.backgroundImage = 'url("https://arsonwarehouse.com/images/awh-icon-48.png")';
-    anchor.style.backgroundRepeat = 'no-repeat';
-    anchor.style.backgroundSize = '.75rem';
-    anchor.style.backgroundPositionX = '.125rem';
-    anchor.style.color = '#B53471';
-    anchor.style.textDecoration = 'none';
-    anchor.innerText = 'View in item market';
-    shortDescriptionDiv.appendChild(anchor);
+        const itemMarketLinkHtml = `<a href="/imarket.php#/p=shop&type=${expandedItemId}" style="${this._getItemMarketLinkStyles().join(';')}">View in item market</a>`;
+        shortDescriptionDiv.insertAdjacentHTML('beforeend', itemMarketLinkHtml);
+    }
+    _getNewlyOpenedItemInfoPane(mutations) {
+        const mutation = mutations.find(mutation => {
+            return mutation.addedNodes.length === 1 && mutation.addedNodes[0].classList.contains('show-item-info')
+        });
+        return mutation ? mutation.addedNodes[0] : null;
+    }
+    _getItemMarketLinkStyles() {
+        return [
+            'color: #B53471',
+            'text-decoration: none',
+            'padding-left: 1rem',
+            'background: url(\'https://arsonwarehouse.com/images/awh-icon-48.png\') .125rem/.75rem no-repeat',
+        ];
+    }
 }
 
 function truthy(handler) {
