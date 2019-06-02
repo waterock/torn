@@ -10,47 +10,49 @@
 
 (async function () {
     const itemsList = await truthy(() => document.querySelector('.bazaar-main-wrap .items-list'));
-    new ItemMarketLinkInserter().bindTo(itemsList);
+    new MutationObserver(insertMarketLinkOnItemPaneOpened.bind(null, itemsList)).observe(itemsList, {childList: true});
 })();
 
-class ItemMarketLinkInserter {
-    bindTo(itemsList) {
-        new MutationObserver(this._insertLinkOnItemExpanded.bind(this, itemsList))
-            .observe(itemsList, {childList: true});
+function insertMarketLinkOnItemPaneOpened(itemsList, mutations) {
+    const itemPane = getNewlyOpenedItemPane(mutations);
+    if (itemPane === null) {
+        return;
     }
-    _insertLinkOnItemExpanded(itemsList, mutations) {
-        const addedItemInfoLi = this._getNewlyOpenedItemInfoPane(mutations);
-        if (addedItemInfoLi === null) {
-            return;
-        }
-        this._insertLink(
-            Array.from(itemsList.children).find(li => li.classList.contains('act')),
-            addedItemInfoLi
-        );
-    }
-    async _insertLink(expandedItemLi, itemInfoLi) {
-        const expandedItemId = expandedItemLi.querySelector('[itemid]').getAttribute('itemid');
+    insertMarketLink(itemPane);
+}
 
-        const itemInfoSpan = await truthy(() => itemInfoLi.querySelector('.item-cont .item-wrap .info-msg'));
-        const shortDescriptionDiv = itemInfoSpan.firstElementChild;
+async function insertMarketLink(itemPane) {
+    const itemId = getActiveItem(itemPane).querySelector('[itemid]').getAttribute('itemid');
+    const itemInfoSpan = await truthy(() => itemPane.querySelector('.item-cont .item-wrap .info-msg'));
+    const shortDescriptionDiv = itemInfoSpan.firstElementChild;
 
-        const itemMarketLinkHtml = `<a href="/imarket.php#/p=shop&type=${expandedItemId}" style="${this._getItemMarketLinkStyles().join(';')}">View in item market</a>`;
-        shortDescriptionDiv.insertAdjacentHTML('beforeend', itemMarketLinkHtml);
-    }
-    _getNewlyOpenedItemInfoPane(mutations) {
-        const mutation = mutations.find(mutation => {
-            return mutation.addedNodes.length === 1 && mutation.addedNodes[0].classList.contains('show-item-info')
-        });
-        return mutation ? mutation.addedNodes[0] : null;
-    }
-    _getItemMarketLinkStyles() {
-        return [
-            'color: #B53471',
-            'text-decoration: none',
-            'padding-left: 1rem',
-            'background: url(\'https://arsonwarehouse.com/images/awh-icon-48.png\') .125rem/.75rem no-repeat',
-        ];
-    }
+    const marketLinkHtml = `<a href="/imarket.php#/p=shop&type=${itemId}" style="${getItemMarketLinkStyles().join(';')}">View in item market</a>`;
+    shortDescriptionDiv.insertAdjacentHTML('beforeend', marketLinkHtml);
+}
+
+function getNewlyOpenedItemPane(mutations) {
+    const infoPaneAddition = mutations.find(mutation => {
+        return mutation.addedNodes.length === 1 && mutation.addedNodes[0].classList.contains('show-item-info');
+    });
+    return infoPaneAddition ? infoPaneAddition.addedNodes[0] : null;
+}
+
+function getActiveItem(infoPane) {
+    return getPossibleActiveItems(infoPane).find(li => li.classList.contains('act'));
+}
+
+function getPossibleActiveItems(infoPane) {
+    const firstPrevious = infoPane.previousElementSibling, secondPrevious = firstPrevious.previousElementSibling, thirdPrevious = secondPrevious.previousElementSibling;
+    return [firstPrevious, secondPrevious, thirdPrevious];
+}
+
+function getItemMarketLinkStyles() {
+    return [
+        'color: #B53471',
+        'text-decoration: none',
+        'padding-left: 1rem',
+        'background: url(\'https://arsonwarehouse.com/images/awh-icon-48.png\') .125rem/.75rem no-repeat',
+    ];
 }
 
 function truthy(handler) {
