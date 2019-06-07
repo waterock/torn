@@ -1,12 +1,22 @@
 // ==UserScript==
 // @name         Descriptive Mission Titles
 // @namespace    https://github.com/sulsay/torn
-// @version      1.0
+// @version      1.1
 // @description  Renames (Duke) missions to reflect their main objective
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/loader.php?sid=missions
-// @grant        none
+// @grant        GM_addStyle
 // ==/UserScript==
+
+GM_addStyle(`
+#missionsMainContainer .giver-tabs a {
+    position: relative;
+}
+#missionsMainContainer .giver-tabs a i.right:not(.mission-timeout-icon) {
+    position: absolute;
+    left: 0;
+    top: .4rem;
+}`);
 
 const missionTitles = new Map([
     ['Introduction: Duke', 'Complete 10 Duke contracts'],
@@ -14,7 +24,7 @@ const missionTitles = new Map([
     ['Battering Ram', 'Attack {name} 3 times'],
     ['New Kid on the Block', 'Defeat any 5 players'],
     ['Against the Odds', 'Defeat 2 {name}'],
-    ['A Good Day to Get Hard', 'Achieve a killstreak of 10'],
+    ['A Good Day To Get Hard', 'Achieve a killstreak of 10'],
     ['A Kimpossible Task', 'Defeat {name} using only melee and temp weapons'],
     ['An Honorary Degree', 'Defeat {name} without using any guns'],
     ['A Problem at the Tracks', 'Defeat 3 {name} without using guns'],
@@ -25,7 +35,7 @@ const missionTitles = new Map([
     ['Batshit Crazy', 'Inflict aprox 17k, 45K damage using Duke\'s Bat'],
     ['Big Tub of Muscle', 'Defeat {name} despite their gargantuan strength'],
     ['Birthday Surprise', 'Obtain afro comb/edvd/laptop, place in empty box, giftwrap, send to Duke'],
-    ['Bonnie & Clyde', 'Defeat {name} and spouse of {name}'],
+    ['Bonnie and Clyde', 'Defeat {name} and their spouse {name}'],
     ['Bountiful', 'Claim 2,3, or 5 bounties'],
     ['Bounty on the Mutiny', 'Bounty {name} and wait for bounty to be fulfilled'],
     ['Candy from Babies', 'Collect $150k or $250k in bounties'],
@@ -112,21 +122,29 @@ function missionsContainerUpdated() {
     const missionListItems = Array.from(missionsList.children);
 
     for (let missionListItem of missionListItems) {
-        renameMissionListItem(missionListItem);
-        renameMissionDetailsTitle(document.getElementById(missionListItem.getAttribute('aria-controls')));
+        const missionDetailsPane = document.getElementById(missionListItem.getAttribute('aria-controls'));
+        const targetNames = getMissionTargetNames(missionDetailsPane);
+
+        renameMissionListItem(missionListItem, targetNames);
+        renameMissionDetailsTitle(missionDetailsPane, targetNames);
     }
 }
 
-function renameMissionListItem(missionListItem) {
-    const anchor = missionListItem.querySelector('a');
-    const originalMissionTitleNode = getOriginalMissionTitleTextNode(anchor);
-    replaceMissionTitle(anchor, originalMissionTitleNode);
+function getMissionTargetNames(missionDetailsPane) {
+    const profileLinks = missionDetailsPane.querySelectorAll('a[href^="profiles.php?XID="]');
+    return Array.from(profileLinks).map(profileLink => profileLink.innerText.trim());
 }
 
-function renameMissionDetailsTitle(missionDetailsPane) {
+function renameMissionListItem(missionListItem, targetNames) {
+    const anchor = missionListItem.querySelector('a');
+    const originalMissionTitleNode = getOriginalMissionTitleTextNode(anchor);
+    replaceMissionTitle(anchor, originalMissionTitleNode, targetNames);
+}
+
+function renameMissionDetailsTitle(missionDetailsPane, targetNames) {
     const titleDiv = missionDetailsPane.querySelector('.title-black');
     const originalMissionTitleNode = getOriginalMissionTitleTextNode(titleDiv);
-    replaceMissionTitle(titleDiv, originalMissionTitleNode);
+    replaceMissionTitle(titleDiv, originalMissionTitleNode, targetNames);
 }
 
 function getOriginalMissionTitleTextNode(context) {
@@ -139,10 +157,15 @@ function getOriginalMissionTitleTextNode(context) {
     }) || null;
 }
 
-function replaceMissionTitle(context, originalTitleNode) {
+function replaceMissionTitle(context, originalTitleNode, targetNames) {
     if (originalTitleNode === null) {
         return;
     }
-    const replacementTitleNode = document.createTextNode(missionTitles.get(originalTitleNode.textContent.trim()));
-    context.replaceChild(replacementTitleNode, originalTitleNode);
+
+    let replacementTitle = missionTitles.get(originalTitleNode.textContent.trim());
+    for (let targetName of targetNames) {
+       replacementTitle = replacementTitle.replace('{name}', targetName);
+    }
+
+    context.replaceChild(document.createTextNode(replacementTitle), originalTitleNode);
 }
