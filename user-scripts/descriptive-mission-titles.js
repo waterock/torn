@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Descriptive Mission Titles
 // @namespace    https://github.com/sulsay/torn
-// @version      1.1.1
+// @version      1.2
 // @description  Renames (Duke) missions to reflect their main objective
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/loader.php?sid=missions
