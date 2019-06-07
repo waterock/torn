@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Descriptive Mission Titles
 // @namespace    https://github.com/sulsay/torn
-// @version      1.1
+// @version      1.1.1
 // @description  Renames (Duke) missions to reflect their main objective
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/loader.php?sid=missions
@@ -89,7 +89,7 @@ const missionTitles = new Map([
     ['Reconstruction', 'Equip kitchen knife/leather gloves, defeat {name} then dump both items.'],
     ['Red Faced', 'Defeat {name} using a trout as finishing hit'],
     ['Rising Costs', 'Hit {name} with a brick'],
-    ['Rolling in It', 'Mug {name}'],
+    ['Rolling in it', 'Mug {name}'],
     ['Safari', 'Travel to South Africa and defeat {name} with a rifle'],
     ['Scammer', 'Defeat {name}'],
     ['Sellout Slayer', 'Buy a gun from item market or bazaar, use gun on any 3, 6 players, sell gun in item market or bazaar'],
