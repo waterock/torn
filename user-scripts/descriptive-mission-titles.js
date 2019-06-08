@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Descriptive Mission Titles
 // @namespace    https://github.com/sulsay/torn
-// @version      1.2
+// @version      1.3
 // @description  Renames (Duke) missions to reflect their main objective
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/loader.php?sid=missions
@@ -103,11 +103,11 @@ const missionTitles = new Map([
     ['The Tattoo Artist', 'Defeat {name} using only a slashing weapon'],
     ['Three-Peat', 'Defeat any 3 players by leave 1, mug 1, hosp 1'],
     ['Training Day', 'Spend 250e, 500e, 750e, 1000e, 1250e gym training'],
-    ['Tree Huggers', 'Defeat 6-8 {name}'],
-    ['Undercutters', 'Defeat 3 {name}'],
-    ['Unwanted Attention', 'Hospitalize 4 {name}'],
-    ['Withdrawal', 'Injure {name} both arms'],
-    ['Wrath of Duke', 'Defeat 3 {name}'],
+    ['Tree Huggers', 'Defeat up to 8: {name}, {name}, {name}, {name}, {name}, {name}, {name} and {name}'],
+    ['Undercutters', 'Defeat 3: {name}, {name} and {name}'],
+    ['Unwanted Attention', 'Hospitalize 4: {name}, {name}, {name} and {name}'],
+    ['Withdrawal', 'Injure {name}\'s both arms'],
+    ['Wrath of Duke', 'Defeat 3: {name}, {name} and {name}'],
 ]);
 const originalMissionNames = Array.from(missionTitles.keys());
 
