@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Item Page Total Value
 // @namespace    https://arsonwarehouse.com
-// @version      1.0
+// @version      1.1
 // @description  Shows the market value of each item stack on your items page.
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/item.php
@@ -27,7 +27,7 @@ async function insertValueIntoItemsOfVisibleCategory() {
         await ensureMarketValueIsLoadedForItems(itemIds);
         itemListItems.forEach(insertValueIntoItemRow);
     } catch (error) {
-        alert('The user script "Item Page Total Value" could not load items data. Did you enter your API key?\n\nTorn API says: ' +  error.message);
+        alert('The user script "Item Page Total Value" could not load items data. Did you enter your API key?\n\nTorn API says: ' + error.message);
     }
 }
 
@@ -60,7 +60,7 @@ function ensureMarketValueIsLoadedForItems(itemIds) {
     return fetch('https://api.torn.com/torn/' + itemIdsToFetch.join(',') + '?selections=items&key=' + settings.tornApiKey)
         .then(response => response.json())
         .then(response => {
-            if (response.status !== 200 || response.items === undefined) {
+            if (response.items === undefined) {
                 throw Error((response.error && response.error.error) || 'Unknown error');
             }
             return response.items;
