@@ -1,0 +1,38 @@
+{
+  "manifest_version": 2,
+  "name": "ArsonWarehouse",
+  "version": "3.4",
+  "author": "Sulsay",
+  "permissions": [
+    "activeTab",
+    "https://arsonwarehouse.com/"
+  ],
+  "background": {
+    "scripts": [
+      "node_modules/webextension-polyfill/dist/browser-polyfill.js",
+      "background.js"
+    ],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.torn.com/trade.php"],
+      "js": [
+        "node_modules/webextension-polyfill/dist/browser-polyfill.js",
+        "js/content-scripts/trade/TradeSide.js",
+        "js/content-scripts/trade/TradeItem.js",
+        "js/content-scripts/trade/TradeValueModal.js",
+        "js/content-scripts/trade/StyleInjector.js",
+        "js/content-scripts/trade/trade.js"
+      ]
+    }
+  ],
+  "browser_action": {
+  },
+  "icons": {
+    "16": "images/icon16.png",
+    "32": "images/icon32.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  }
+}

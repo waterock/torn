@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "webextension-polyfill": "^0.4.0"
+  }
+}
