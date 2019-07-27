@@ -1,3 +1,5 @@
+const isYandex = navigator.userAgent.indexOf('YaBrowser') > -1;
+
 chrome.browserAction.onClicked.addListener(async (tab) => {
     if (tab.url.indexOf('trade.php') === -1) {
         showAlertInTab(tab, 'ArsonWarehouse shows you the total value for a trade.\n\nView a trade and then press this button.');
@@ -6,16 +8,27 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
 
     try {
         const tradeData = await getTradeData(tab);
+        if (isYandex) {
+            showAlertInTab(tab, JSON.parse(tradeData));
+        }
         const tradeValue = await fetchTradeValue(tradeData);
+        if (isYandex) {
+            showAlertInTab(tab, JSON.parse(tradeValue));
+        }
         emitTradeValue(tab, tradeValue);
     } catch (error) {
-        showAlertInTab(tab, error.hasFriendlyMessage ? error.message : 'Failed to get trade value.');
+        if (isYandex) {
+            showAlertInTab(tab, 'Yandex\n\n' + error.message);
+        } else {
+            showAlertInTab(tab, error.hasFriendlyMessage ? error.message : 'Failed to get trade value.');
+        }
     }
 });
 
 function getTradeData(tab) {
     return new Promise((resolve) => {
-        chrome.tabs.sendMessage(tab.id, {action: 'get-trade-data'}, resolve);
+        const sendMessage = isYandex ? chrome.tabs.sendRequest : chrome.tabs.sendMessage;
+        sendMessage(tab.id, {action: 'get-trade-data'}, resolve);
     });
 }
 
@@ -38,7 +51,8 @@ function fetchTradeValue(tradeData) {
 }
 
 function emitTradeValue(tab, tradeValue) {
-    chrome.tabs.sendMessage(tab.id, {
+    const sendMessage = isYandex ? chrome.tabs.sendRequest : chrome.tabs.sendMessage;
+    sendMessage(tab.id, {
         action: 'did-calculate-trade-value',
         payload: tradeValue,
     });

@@ -25,7 +25,7 @@ async function getTradeData() {
         otherUserItems: otherUserSide.getItems().map(item => item.getApiRequestData()),
     };
 
-    return Promise.resolve(tradeData);
+    return tradeData;
 }
 
 function getTradeValueModalBodyHtml(trade) {
