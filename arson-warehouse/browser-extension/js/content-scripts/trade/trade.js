@@ -25,6 +25,11 @@ async function getTradeData() {
         otherUserItems: otherUserSide.getItems().map(item => item.getApiRequestData()),
     };
 
+    chrome.runtime.sendMessage({
+        action: 'did-get-trade-data-for-yandex',
+        payload: tradeData,
+    });
+
     return tradeData;
 }
 

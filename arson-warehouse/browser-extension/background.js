@@ -1,4 +1,4 @@
-const isYandex = navigator.userAgent.indexOf('YaBrowser') > -1;
+const userAgentIsYandex = navigator.userAgent.indexOf('YaBrowser') > -1;
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
     if (tab.url.indexOf('trade.php') === -1) {
@@ -8,27 +8,33 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
 
     try {
         const tradeData = await getTradeData(tab);
-        if (isYandex) {
-            showAlertInTab(tab, JSON.parse(tradeData));
-        }
         const tradeValue = await fetchTradeValue(tradeData);
-        if (isYandex) {
-            showAlertInTab(tab, JSON.parse(tradeValue));
-        }
         emitTradeValue(tab, tradeValue);
     } catch (error) {
-        if (isYandex) {
-            showAlertInTab(tab, 'Yandex\n\n' + error.message);
-        } else {
-            showAlertInTab(tab, error.hasFriendlyMessage ? error.message : 'Failed to get trade value.');
-        }
+        showAlertInTab(tab, error.hasFriendlyMessage ? error.message : 'Failed to get trade value.');
     }
 });
 
 function getTradeData(tab) {
+    if (userAgentIsYandex) {
+        return getTradeDataForYandex(tab);
+    }
+
     return new Promise((resolve) => {
-        const sendMessage = isYandex ? chrome.tabs.sendRequest : chrome.tabs.sendMessage;
-        sendMessage(tab.id, {action: 'get-trade-data'}, resolve);
+        chrome.tabs.sendMessage(tab.id, {action: 'get-trade-data'}, resolve);
+    });
+}
+
+function getTradeDataForYandex(tab) {
+    return new Promise((resolve) => {
+        const oneTimeResponseHandler = (message) => {
+            if (message.action === 'did-get-trade-data-for-yandex') {
+                resolve(message.payload);
+            }
+            chrome.runtime.onMessage.removeListener(oneTimeResponseHandler);
+        };
+        chrome.runtime.onMessage.addListener(oneTimeResponseHandler);
+        chrome.tabs.sendMessage(tab.id, {action: 'get-trade-data'});
     });
 }
 
@@ -51,8 +57,7 @@ function fetchTradeValue(tradeData) {
 }
 
 function emitTradeValue(tab, tradeValue) {
-    const sendMessage = isYandex ? chrome.tabs.sendRequest : chrome.tabs.sendMessage;
-    sendMessage(tab.id, {
+    chrome.tabs.sendMessage(tab.id, {
         action: 'did-calculate-trade-value',
         payload: tradeValue,
     });
