@@ -1,6 +1,6 @@
-browser.runtime.onMessage.addListener(async (message) => {
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     if (message.action === 'get-trade-data') {
-        return getTradeData();
+        return browserAgnosticResponse(getTradeData(), sendResponse);
     }
 
     if (message.action === 'did-calculate-trade-value') {
@@ -63,6 +63,14 @@ function truthy(handler) {
         };
         resolveIfHandlerReturnsTruthy();
     });
+}
+
+function browserAgnosticResponse(promise, sendResponse) {
+    // For chrome, invoke sendResponse when the promise resolves:
+    promise.then(sendResponse);
+
+    // For firefox, return the promise:
+    return promise;
 }
 
 function getUserIdFromCookie() {

@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "ArsonWarehouse",
-  "version": "3.4",
+  "version": "3.4.2",
   "author": "Sulsay",
   "permissions": [
     "activeTab",
@@ -9,7 +9,6 @@
   ],
   "background": {
     "scripts": [
-      "node_modules/webextension-polyfill/dist/browser-polyfill.js",
       "background.js"
     ],
     "persistent": false
@@ -18,7 +17,6 @@
     {
       "matches": ["https://www.torn.com/trade.php"],
       "js": [
-        "node_modules/webextension-polyfill/dist/browser-polyfill.js",
         "js/content-scripts/trade/TradeSide.js",
         "js/content-scripts/trade/TradeItem.js",
         "js/content-scripts/trade/TradeValueModal.js",
