@@ -1,4 +1,6 @@
-browser.browserAction.onClicked.addListener(async (tab) => {
+const userAgentIsYandex = navigator.userAgent.indexOf('YaBrowser') > -1;
+
+chrome.browserAction.onClicked.addListener(async (tab) => {
     if (tab.url.indexOf('trade.php') === -1) {
         showAlertInTab(tab, 'ArsonWarehouse shows you the total value for a trade.\n\nView a trade and then press this button.');
         return;
@@ -14,8 +16,25 @@ browser.browserAction.onClicked.addListener(async (tab) => {
 });
 
 function getTradeData(tab) {
-    return browser.tabs.sendMessage(tab.id, {
-        action: 'get-trade-data',
+    if (userAgentIsYandex) {
+        return getTradeDataForYandex(tab);
+    }
+
+    return new Promise((resolve) => {
+        chrome.tabs.sendMessage(tab.id, {action: 'get-trade-data'}, resolve);
+    });
+}
+
+function getTradeDataForYandex(tab) {
+    return new Promise((resolve) => {
+        const oneTimeResponseHandler = (message) => {
+            if (message.action === 'did-get-trade-data-for-yandex') {
+                resolve(message.payload);
+            }
+            chrome.runtime.onMessage.removeListener(oneTimeResponseHandler);
+        };
+        chrome.runtime.onMessage.addListener(oneTimeResponseHandler);
+        chrome.tabs.sendMessage(tab.id, {action: 'get-trade-data'});
     });
 }
 
@@ -38,7 +57,7 @@ function fetchTradeValue(tradeData) {
 }
 
 function emitTradeValue(tab, tradeValue) {
-    browser.tabs.sendMessage(tab.id, {
+    chrome.tabs.sendMessage(tab.id, {
         action: 'did-calculate-trade-value',
         payload: tradeValue,
     });
@@ -46,7 +65,7 @@ function emitTradeValue(tab, tradeValue) {
 
 function getRequestBody(tradeData) {
     const requestBody = {
-        plugin_version: browser.runtime.getManifest().version,
+        plugin_version: chrome.runtime.getManifest().version,
     };
 
     const currentUserIsBuyer = tradeData.currentUserItems.length === 0 && tradeData.otherUserItems.length > 0;
@@ -62,7 +81,7 @@ function getRequestBody(tradeData) {
 }
 
 function showAlertInTab(tab, message) {
-    browser.tabs.executeScript(tab.id, {
+    chrome.tabs.executeScript(tab.id, {
         code: 'alert(' + JSON.stringify(message) + ');'
     });
 }
