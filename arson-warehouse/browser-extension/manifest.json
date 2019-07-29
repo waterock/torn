@@ -5,13 +5,14 @@
   "author": "Sulsay",
   "permissions": [
     "activeTab",
-    "https://arsonwarehouse.com/"
+    "https://arsonwarehouse.com/",
+    "https://www.torn.com/forums.php?*"
   ],
   "background": {
     "scripts": [
       "background.js"
     ],
-    "persistent": false
+    "persistent": true
   },
   "content_scripts": [
     {
@@ -23,6 +24,13 @@
         "js/content-scripts/trade/StyleInjector.js",
         "js/content-scripts/trade/trade.js"
       ]
+    },
+    {
+      "matches": ["https://www.torn.com/forums.php"],
+      "js": [
+        "js/content-scripts/forums/forums.js"
+      ],
+      "run_at": "document_start"
     }
   ],
   "browser_action": {
@@ -32,5 +40,8 @@
     "32": "images/icon32.png",
     "48": "images/icon48.png",
     "128": "images/icon128.png"
-  }
+  },
+  "web_accessible_resources": [
+    "js/public/forums/capture-ajax.js"
+  ]
 }
