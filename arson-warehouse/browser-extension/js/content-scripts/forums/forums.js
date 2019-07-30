@@ -18,6 +18,7 @@ function getDocumentHead() {
                         if (addedNode.tagName === 'HEAD') {
                             observer.disconnect();
                             resolve(addedNode);
+                            return;
                         }
                     }
                 }
