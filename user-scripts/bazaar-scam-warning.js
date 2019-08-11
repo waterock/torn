@@ -1,24 +1,15 @@
 // ==UserScript==
 // @name         Bazaar Scam Warning
 // @namespace    https://arsonwarehouse.com
-// @version      1.0
+// @version      2.0
 // @description  Puts a big red warning on items that are priced way above their market value
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/bazaar.php
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-const settings = {
-    tornApiKey: 'YOUR_KEY_HERE',
-    itemsToWarnFor: [
-        35, // Box of Chocolate Bars
-        205, // Vicodin
-        364, // Box of Grenades
-        365, // Box of Medical Supplies
-    ],
-};
-
-const marketValueByItemId = new Map();
+const apiDataByItemId = new Map();
+const equipmentItemTypes = ['Primary', 'Secondary', 'Melee', 'Defensive'];
 
 (async function() {
     const itemsList = await truthy(() => document.querySelector('.bazaar-main-wrap .items-list'));
@@ -35,16 +26,16 @@ async function insertWarningsForItemListItemsIfPriceIsTooHigh(itemListItems) {
 
     const itemIds = itemListItems
         .map(li => parseInt(li.querySelector('.img-wrap').getAttribute('itemid'), 10))
-        .filter(unique)
-        .filter(itemId => settings.itemsToWarnFor.includes(itemId));
+        .filter(unique);
 
     try {
-        await ensureMarketValueIsLoadedForItems(itemIds);
+        await ensureApiDataIsLoadedForItems(itemIds);
     } catch (error) {
-        alert('The user script "Bazaar Scam Warning" could not load items data. Did you enter your API key?\n\nTorn API says: ' + error.message);
+        alert('The user script "Bazaar Scam Warning" could not load items data. This might be a temporary hiccup, but if it continues to fail, please contact the author (Sulsay [2173590]) so the problem can be dealt with. Thanks for your patience!');
     }
 
     itemListItems
+        .filter(isNotEquipment)
         .filter(isPriceTooHigh)
         .forEach(insertWarning);
 }
@@ -60,11 +51,18 @@ function handleChangedItemsListChildren(mutations) {
     insertWarningsForItemListItemsIfPriceIsTooHigh(newItemListItems);
 }
 
-function isPriceTooHigh(itemListItem) {
-    const itemId = parseInt(itemListItem.querySelector('.img-wrap').getAttribute('itemid'), 10);
-    const listedPrice = parseInt(itemListItem.querySelector('.price').innerText.replace('$', '').replace(/,/g, ''));
+function isNotEquipment(itemListItem) {
+    return ! equipmentItemTypes.includes(getItemApiDataForItemListItem(itemListItem).type);
+}
 
-    return listedPrice > marketValueByItemId.get(itemId) * 2;
+function isPriceTooHigh(itemListItem) {
+    const listedPrice = parseInt(itemListItem.querySelector('.price').innerText.replace('$', '').replace(/,/g, ''));
+    return listedPrice > getItemApiDataForItemListItem(itemListItem).market_value * 1.2;
+}
+
+function getItemApiDataForItemListItem(itemListItem) {
+    const itemId = parseInt(itemListItem.querySelector('.img-wrap').getAttribute('itemid'), 10);
+    return apiDataByItemId.get(itemId);
 }
 
 function insertWarning(itemListItem) {
@@ -76,23 +74,23 @@ function insertWarning(itemListItem) {
     priceSpan.innerText = `!! ${priceSpan.innerText} !!`;
 }
 
-async function ensureMarketValueIsLoadedForItems(itemIds) {
-    const itemIdsToFetch = itemIds.filter(itemId => ! marketValueByItemId.has(itemId));
+async function ensureApiDataIsLoadedForItems(itemIds) {
+    const itemIdsToFetch = itemIds.filter(itemId => ! apiDataByItemId.has(itemId));
     if (itemIdsToFetch.length === 0) {
         return Promise.resolve();
     }
 
     const items = await fetchItems(itemIds);
-    Object.entries(items).forEach(([itemId, apiData]) => {
-        marketValueByItemId.set(parseInt(itemId, 10), apiData.market_value);
-    });
+    for (let item of items) {
+        apiDataByItemId.set(item.id, item);
+    }
 }
 
 function fetchItems(itemIds) {
     return new Promise((resolve, reject) => {
         GM_xmlhttpRequest({
             method: 'GET',
-            url: `https://api.torn.com/torn/${itemIds.join(',')}?selections=items&key=${settings.tornApiKey}`,
+            url: 'https://arsonwarehouse.com/api/v1/items?id=' + itemIds.join(','),
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -105,7 +103,7 @@ function fetchItems(itemIds) {
                     if (responseJson.error) {
                         return reject(new Error(responseJson.error.error || 'Unknown error'));
                     }
-                    resolve(responseJson.items);
+                    resolve(responseJson);
                 } catch (error) {
                     reject(error)
                 }
