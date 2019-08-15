@@ -9,7 +9,7 @@ class TradeValueModal {
         this._ensureModalStyleIsInjected();
 
         this._modalElement = document.createElement('div');
-        this._modalElement.className = 'arson-warehouse-modal';
+        this._modalElement.className = 'arson-warehouse-modal awh-trade-value-modal';
         document.body.appendChild(this._modalElement);
 
         const modalContent = document.createElement('div');
@@ -59,7 +59,9 @@ class TradeValueModal {
         element.addEventListener('click', () => this.close());
     }
     _ensureModalStyleIsInjected() {
-        if (document.head.querySelector('style.arson-warehouse-modal') !== null) {
+        const styleElementClassName = 'arson-warehouse-modal-styles';
+
+        if (document.head.querySelector('.' + styleElementClassName) !== null) {
             return;
         }
 
@@ -124,16 +126,6 @@ class TradeValueModal {
             .add('.arson-warehouse-modal-body .loading', {
                 'text-align': 'center',
             })
-            .add('.arson-warehouse-modal-body hr', {
-                'margin': '1em 0',
-            })
-            .add('.arson-warehouse-modal-body .receipt-url', {
-                'text-align': 'right',
-                'font-size': '.8rem',
-            })
-            .add('.arson-warehouse-modal-body .receipt-url a', {
-                'color': '#aaa',
-            })
             .add('.arson-warehouse-modal-backdrop', {
                 'position': 'fixed',
                 'top': 0,
@@ -144,6 +136,6 @@ class TradeValueModal {
                 'background-color': 'black',
                 'opacity': .5,
             })
-            .inject('arson-warehouse-modal');
+            .inject(styleElementClassName);
     }
 }

@@ -1,14 +1,15 @@
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+let tradeValueModal = null;
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'get-trade-data') {
+        tradeValueModal = openNewTradeValueModal();
         return browserAgnosticResponse(getTradeData(), sendResponse);
     }
 
     if (message.action === 'did-calculate-trade-value') {
-        const trade = message.payload;
-
-        const tradeValueModal = new TradeValueModal();
-        tradeValueModal.open();
-        tradeValueModal.setBodyHtml(getTradeValueModalBodyHtml(trade));
+        const {trade_value_modal_css, modal_body_html} = message.payload;
+        injectCSS(trade_value_modal_css);
+        tradeValueModal.setBodyHtml(modal_body_html);
     }
 });
 
@@ -33,27 +34,25 @@ async function getTradeData() {
     return tradeData;
 }
 
-function getTradeValueModalBodyHtml(trade) {
-    let html = '';
-    for (let component of trade.components) {
-        html += `${component.name}: ${formatCurrency(component.unit_price)} x ${component.quantity} = ${formatCurrency(component.total_price)} <span style="color:white">|</span><br>`;
+function injectCSS(css) {
+    if (document.head.querySelector('.trade-value-modal-styles') !== null) {
+        return;
     }
-    html += '<hr>';
-    html += `Total: <strong>${formatCurrency(trade.total_price)}</strong><br>`;
+    const styleElement = document.createElement('style');
+    styleElement.className = 'trade-value-modal-styles';
+    styleElement.innerHTML = css;
+    document.head.appendChild(styleElement);
+}
 
-    if (Array.isArray(trade.warnings) && trade.warnings.length > 0) {
-        html += '<br>';
-        html += 'Warnings:<br>';
-        for (let warning of trade.warnings) {
-            html += `${warning}<br>`;
-        }
-    }
-
-    if (trade.receipt_url) {
-        html += '<div class="receipt-url"><a href="' + trade.receipt_url + '" target="_blank" rel="noopener noreferrer">' + trade.receipt_url + '</a></div>';
+function openNewTradeValueModal() {
+    if (tradeValueModal !== null) {
+        tradeValueModal.close();
     }
 
-    return html;
+    const newTradeValueModal = new TradeValueModal();
+    newTradeValueModal.open();
+
+    return newTradeValueModal;
 }
 
 function truthy(handler) {
@@ -85,8 +84,4 @@ function getUserIdFromCookie() {
         .replace('uid=', '');
 
     return parseInt(userIdString, 10);
-}
-
-function formatCurrency(value) {
-    return '$' + value.toLocaleString('en-US');
 }
