@@ -1,12 +1,16 @@
 // ==UserScript==
 // @name         Bazaar Scam Warning
-// @namespace    https://arsonwarehouse.com
-// @version      2.0
+// @namespace    https://www.torn.com/forums.php#/p=threads&f=67&t=16110432
+// @version      2.1
 // @description  Puts a big red warning on items that are priced way above their market value
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/bazaar.php
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
+
+const settings = {
+    priceThresholdRelativeToMarketValue: 1.5,
+};
 
 const apiDataByItemId = new Map();
 const equipmentItemTypes = ['Primary', 'Secondary', 'Melee', 'Defensive'];
@@ -57,7 +61,7 @@ function isNotEquipment(itemListItem) {
 
 function isPriceTooHigh(itemListItem) {
     const listedPrice = parseInt(itemListItem.querySelector('.price').innerText.replace('$', '').replace(/,/g, ''));
-    return listedPrice > getItemApiDataForItemListItem(itemListItem).market_value * 1.2;
+    return listedPrice > getItemApiDataForItemListItem(itemListItem).market_value * settings.priceThresholdRelativeToMarketValue;
 }
 
 function getItemApiDataForItemListItem(itemListItem) {
