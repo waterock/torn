@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Descriptive Mission Titles
 // @namespace    https://github.com/sulsay/torn
-// @version      1.3
+// @version      1.4
 // @description  Renames (Duke) missions to reflect their main objective
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/loader.php?sid=missions
@@ -38,7 +38,7 @@ const missionTitles = new Map([
     ['Bonnie and Clyde', 'Defeat {name} and their spouse {name}'],
     ['Bountiful', 'Claim 2,3, or 5 bounties'],
     ['Bounty on the Mutiny', 'Bounty {name} and wait for bounty to be fulfilled'],
-    ['Candy from Babies', 'Collect $150k or $250k in bounties'],
+    ['Candy From Babies', 'Collect $150k or $250k in bounties'],
     ['Charity Work', 'Mug 2 {name}'],
     ['Cracking Up', 'Defeat & Interrogate {name} to find the code for Duke\'s safe'],
     ['Critical Education', 'Achieve 8 critical hits'],
