@@ -17,9 +17,13 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
 
 chrome.runtime.onMessage.addListener((message) => {
     if (message.action === 'received-equipment-report') {
-        console.log('got equipment report:', message.payload);
+        sendEquipmentReportToArsonWarehouse(message.payload);
     }
 });
+
+function sendEquipmentReportToArsonWarehouse(report) {
+    return fetch('https://arsonwarehouse.com/api/v1/equipment-stats', {method: 'post', body: JSON.stringify(report)});
+}
 
 function getTradeData(tab) {
     if (userAgentIsYandex) {
