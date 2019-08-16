@@ -15,6 +15,12 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
     }
 });
 
+chrome.runtime.onMessage.addListener((message) => {
+    if (message.action === 'received-equipment-report') {
+        console.log('got equipment report:', message.payload);
+    }
+});
+
 function getTradeData(tab) {
     if (userAgentIsYandex) {
         return getTradeDataForYandex(tab);
