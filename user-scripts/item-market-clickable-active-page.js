@@ -8,14 +8,9 @@
 // @grant        GM_addStyle
 // ==/UserScript==
 
-// GM_addStyle(`
-// .shop-market-page .pagination.with-clickable-active-link-script a.active {
-//     cursor: pointer;
-// }
-// `);
+GM_addStyle('.shop-market-page .pagination.with-clickable-active-link-script a.active {cursor: pointer;}');
 
 (async function() {
-
     new MutationObserver((mutations) => {
         for (let mutation of mutations) {
             for (let addedNode of mutation.addedNodes) {
@@ -28,28 +23,48 @@
 })();
 
 function marketPageDidLoad(marketPage) {
-    const paginations = marketPage.querySelectorAll('.pagination');
-    for (let pagination of paginations) {
-        const activePageAnchor = pagination.querySelector('a.active');
-        const pageNumber = parseInt(activePageAnchor.getAttribute('page'), 10);
-        activePageAnchor.href = getHref(pageNumber);
-
-        activePageAnchor.addEventListener('click', () => {
-            const from = window.location.href;
-            const to = activePageAnchor.href;
-            console.log('from',window.location.href);
-            console.log('to--',activePageAnchor.href);
-            if (from === to) {
-                window.location.reload();
-            } else {
-                window.location = activePageAnchor.href;
-            }
-        });
-    }
+    marketPage.querySelectorAll('.pagination').forEach(makeActivePageClickable);
 }
 
-function getHref(pageNumber) {
+function makeActivePageClickable(pagination) {
+    pagination.classList.add('with-clickable-active-link-script');
+
+    const activePageAnchor = pagination.querySelector('a.active');
+    activePageAnchor.href = getHrefForPageNumber(parseInt(activePageAnchor.getAttribute('page'), 10));
+
+    activePageAnchor.addEventListener('click', () => {
+        if (window.location.href === activePageAnchor.href) {
+            window.location.reload();
+        } else {
+            window.location = activePageAnchor.href;
+        }
+    });
+}
+
+function getHrefForPageNumber(pageNumber) {
     // todo item id
-    // todo for page 1 switch between start and no start param
-    return '#/p=shop&type=36&start=' + ((pageNumber - 1) * 20);
+
+    const currentHashParams = window.location.hash.substr(2).split('&');
+    const nextHashParamsInDefaultOrder = ['p=shop', 'type=36', `start=${(pageNumber - 1) * 20}`];
+
+    const nextHashParams = paramsAreEqual(nextHashParamsInDefaultOrder, currentHashParams)
+        ? swapLastTwoParams(nextHashParamsInDefaultOrder)
+        : nextHashParamsInDefaultOrder;
+
+    return '#/' + nextHashParams.join('&');
+}
+
+function paramsAreEqual(paramsA, paramsB) {
+    return JSON.stringify(paramsA) === JSON.stringify(paramsB);
+}
+
+function swapLastTwoParams(allParams) {
+    if (allParams.length < 2) {
+        return [...allParams];
+    }
+
+    const copyOfHead = allParams.slice(0, -2);
+    const reversedTail = allParams.slice(-2).reverse();
+
+    return copyOfHead.concat(reversedTail);
 }
