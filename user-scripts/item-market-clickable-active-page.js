@@ -42,10 +42,10 @@ function makeActivePageClickable(pagination) {
 }
 
 function getHrefForPageNumber(pageNumber) {
-    // todo item id
-
     const currentHashParams = window.location.hash.substr(2).split('&');
-    const nextHashParamsInDefaultOrder = ['p=shop', 'type=36', `start=${(pageNumber - 1) * 20}`];
+    const nextHashParamsInDefaultOrder = currentHashParams
+        .filter(param => param.indexOf('p=') === 0 || param.indexOf('type=') === 0)
+        .concat(`start=${(pageNumber - 1) * 20}`);
 
     const nextHashParams = paramsAreEqual(nextHashParamsInDefaultOrder, currentHashParams)
         ? swapLastTwoParams(nextHashParamsInDefaultOrder)
