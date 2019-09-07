@@ -1,4 +1,4 @@
-window.tradeValueModalVue = null;
+global.tradeValueModalVue = null;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'get-trade-data') {
@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         tradeModalVueRoot.innerHTML = '<trade-modal @close="closeTradeModal" :trade="trade"></trade-modal>';
         document.body.appendChild(tradeModalVueRoot);
 
-        window.tradeValueModalVue = new window.Vue({
+        global.tradeValueModalVue = new global.Vue({
             el: tradeModalVueRoot,
             data() {
                 return {
@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             },
             methods: {
                 closeTradeModal() {
-                    window.tradeValueModalVue = null;
+                    global.tradeValueModalVue = null;
                     document.documentElement.classList.remove('awh-modal-is-open');
                     this.$el.remove();
                     this.$destroy();
@@ -31,12 +31,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return browserAgnosticResponse(getTradeData(), sendResponse);
     }
 
-    if (message.action === 'did-calculate-trade-value' && window.tradeValueModalVue !== null) {
-        window.tradeValueModalVue.trade = message.payload;
+    if (message.action === 'did-calculate-trade-value' && global.tradeValueModalVue !== null) {
+        global.tradeValueModalVue.trade = message.payload;
     }
 
-    if (message.action === 'failed-to-calculate-trade-value' && window.tradeValueModalVue !== null) {
-        window.tradeValueModalVue.closeTradeModal();
+    if (message.action === 'failed-to-calculate-trade-value' && global.tradeValueModalVue !== null) {
+        global.tradeValueModalVue.closeTradeModal();
     }
 });
 

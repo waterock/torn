@@ -1,4 +1,4 @@
-window.Vue.component('TradeModal', {
+global.Vue.component('TradeModal', {
     template: `
 <modal-with-backdrop title="Trade value" modal-class="awh-trade-value-modal" @close-button-pressed="$emit('close')" @backdrop-pressed="$emit('close')">
     <template v-slot:body>

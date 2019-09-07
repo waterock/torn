@@ -1,4 +1,4 @@
-window.Vue.component('TradeComponents', {
+global.Vue.component('TradeComponents', {
     template: `
 <table class="trade-components">
     <thead>

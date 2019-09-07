@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "ArsonWarehouse",
-  "version": "5.1",
+  "version": "5.1.2",
   "author": "Sulsay",
   "permissions": [
     "activeTab",
@@ -27,6 +27,7 @@
       ],
       "js": [
         "js/vue.min.js",
+        "js/global.js",
         "js/content-scripts/components/ModalWithBackdrop.js",
         "js/content-scripts/trade/components/TradeModal.js",
         "js/content-scripts/trade/components/TradeComponents.js",

@@ -1,4 +1,4 @@
-window.Vue.component('TradeComponent', {
+global.Vue.component('TradeComponent', {
     template: `
 <tr class="trade-component">
     <td class="trade-component-name">{{ component.name }}</td>

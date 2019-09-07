@@ -1,4 +1,4 @@
-window.Vue.component('ModalWithBackdrop', {
+global.Vue.component('ModalWithBackdrop', {
     template: `
 <div class="awh-modal-with-backdrop">
     <div :class="'awh-modal ' + modalClass">
