@@ -1,4 +1,9 @@
-const userAgentIsYandex = navigator.userAgent.indexOf('YaBrowser') > -1;
+window.dev = false;
+chrome.management.getSelf((extensionInfo) => {
+    window.dev = extensionInfo.installType === 'development';
+});
+
+window.userAgentIsYandex = navigator.userAgent.indexOf('YaBrowser') > -1;
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
     if (tab.url.indexOf('trade.php') === -1) {
@@ -12,6 +17,7 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
         emitTradeValue(tab, tradeValue);
     } catch (error) {
         showAlertInTab(tab, error.hasFriendlyMessage ? error.message : 'Failed to get trade value.');
+        chrome.tabs.sendMessage(tab.id, {action: 'failed-to-calculate-trade-value'});
     }
 });
 
@@ -22,11 +28,11 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 function sendEquipmentReportToArsonWarehouse(report) {
-    return fetch('https://arsonwarehouse.com/api/v1/equipment-stats', {method: 'post', body: JSON.stringify(report)});
+    return fetch(getBaseUrl() + '/api/v1/equipment-stats', {method: 'post', body: JSON.stringify(report)});
 }
 
 function getTradeData(tab) {
-    if (userAgentIsYandex) {
+    if (window.userAgentIsYandex) {
         return getTradeDataForYandex(tab);
     }
 
@@ -58,7 +64,7 @@ function fetchTradeValue(tradeData) {
 
     const requestBody = getRequestBody(tradeData);
 
-    return fetch('https://arsonwarehouse.com/api/v1/trade-value', {method: 'post', body: JSON.stringify(requestBody)}).then(response => {
+    return fetch(getBaseUrl() + '/api/v1/trade-value', {method: 'post', body: JSON.stringify(requestBody)}).then(response => {
         if (response.status === 200) {
             return response.json()
         }
@@ -100,4 +106,8 @@ function createErrorWithFriendlyMessage(message) {
     const error = new Error(message);
     error.hasFriendlyMessage = true;
     return error;
+}
+
+function getBaseUrl() {
+    return window.dev ? 'http://arsonwarehouse.loc' : 'https://arsonwarehouse.com';
 }

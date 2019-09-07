@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "ArsonWarehouse",
-  "version": "5.0",
+  "version": "5.1",
   "author": "Sulsay",
   "permissions": [
     "activeTab",
@@ -21,11 +21,18 @@
     },
     {
       "matches": ["https://www.torn.com/trade.php"],
+      "css": [
+        "js/content-scripts/components/modal.css",
+        "js/content-scripts/trade/components/trade-modal.css"
+      ],
       "js": [
+        "js/vue.min.js",
+        "js/content-scripts/components/ModalWithBackdrop.js",
+        "js/content-scripts/trade/components/TradeModal.js",
+        "js/content-scripts/trade/components/TradeComponents.js",
+        "js/content-scripts/trade/components/TradeComponent.js",
         "js/content-scripts/trade/TradeSide.js",
         "js/content-scripts/trade/TradeItem.js",
-        "js/content-scripts/trade/TradeValueModal.js",
-        "js/content-scripts/trade/StyleInjector.js",
         "js/content-scripts/trade/trade.js"
       ]
     }

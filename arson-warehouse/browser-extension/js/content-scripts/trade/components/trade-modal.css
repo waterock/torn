@@ -1,0 +1,51 @@
+.awh-trade-value-modal .loading-trade-value {
+    text-align: center;
+}
+.awh-trade-value-modal .trade-components {
+    width: 100%;
+}
+.awh-trade-value-modal .trade-components thead {
+    text-align: left;
+    font-size: .9rem;
+    color: #777;
+}
+.awh-trade-value-modal .trade-component {
+    font-size: .9rem;
+    color: #111;
+}
+.awh-trade-value-modal .trade-components th,
+.awh-trade-value-modal .trade-component td {
+    padding: .15rem 0;
+}
+.awh-trade-value-modal .trade-components th:first-child,
+.awh-trade-value-modal .trade-component td:first-child {
+    padding-left: 1rem;
+}
+.awh-trade-value-modal .trade-components th:last-child,
+.awh-trade-value-modal .trade-component td:last-child {
+    padding-right: 1rem;
+}
+.awh-trade-value-modal .trade-component:nth-child(odd) {
+    background-color: #f4f4f4;
+}
+.awh-trade-value-modal .trade-component-quantity {
+    text-align: right;
+}
+.awh-trade-value-modal .trade-component-unit-price {
+    text-align: right;
+}
+.awh-trade-value-modal .trade-component-total-price {
+    text-align: right;
+}
+.awh-trade-value-modal .awh-modal-footer {
+    display: flex;
+    justify-content: space-between;
+}
+.awh-trade-value-modal .receipt-link {
+    color: #aaa;
+    font-size: .8rem;
+    text-decoration: none;
+}
+.awh-trade-value-modal .trade-value-total {
+    color: #B53471;
+}

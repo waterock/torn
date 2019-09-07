@@ -1,15 +1,42 @@
-let tradeValueModal = null;
+window.tradeValueModalVue = null;
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'get-trade-data') {
-        tradeValueModal = openNewTradeValueModal();
+        const tradeModalVueRoot = document.createElement('div');
+        tradeModalVueRoot.className = 'awh-trade-modal-vue-root';
+        tradeModalVueRoot.setAttribute('v-cloak', '');
+        tradeModalVueRoot.innerHTML = '<trade-modal @close="closeTradeModal" :trade="trade"></trade-modal>';
+        document.body.appendChild(tradeModalVueRoot);
+
+        window.tradeValueModalVue = new window.Vue({
+            el: tradeModalVueRoot,
+            data() {
+                return {
+                    trade: null,
+                };
+            },
+            created() {
+                document.documentElement.classList.add('awh-modal-is-open');
+            },
+            methods: {
+                closeTradeModal() {
+                    window.tradeValueModalVue = null;
+                    document.documentElement.classList.remove('awh-modal-is-open');
+                    this.$el.remove();
+                    this.$destroy();
+                },
+            },
+        });
+
         return browserAgnosticResponse(getTradeData(), sendResponse);
     }
 
-    if (message.action === 'did-calculate-trade-value') {
-        const {trade_value_modal_css, modal_body_html} = message.payload;
-        injectCSS(trade_value_modal_css);
-        tradeValueModal.setBodyHtml(modal_body_html);
+    if (message.action === 'did-calculate-trade-value' && window.tradeValueModalVue !== null) {
+        window.tradeValueModalVue.trade = message.payload;
+    }
+
+    if (message.action === 'failed-to-calculate-trade-value' && window.tradeValueModalVue !== null) {
+        window.tradeValueModalVue.closeTradeModal();
     }
 });
 
@@ -32,27 +59,6 @@ async function getTradeData() {
     });
 
     return tradeData;
-}
-
-function injectCSS(css) {
-    if (document.head.querySelector('.trade-value-modal-styles') !== null) {
-        return;
-    }
-    const styleElement = document.createElement('style');
-    styleElement.className = 'trade-value-modal-styles';
-    styleElement.innerHTML = css;
-    document.head.appendChild(styleElement);
-}
-
-function openNewTradeValueModal() {
-    if (tradeValueModal !== null) {
-        tradeValueModal.close();
-    }
-
-    const newTradeValueModal = new TradeValueModal();
-    newTradeValueModal.open();
-
-    return newTradeValueModal;
 }
 
 function truthy(handler) {
