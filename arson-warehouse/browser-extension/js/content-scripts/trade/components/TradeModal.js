@@ -12,10 +12,10 @@ global.Vue.component('TradeModal', {
         </template>
     </template>
     <template v-if="trade !== null" v-slot:footer>
+        <div class="trade-value-total">Total: {{ formatCurrency(trade.trade_value.total_price) }}</div>
         <div class="receipt-link-wrapper">
             <a :href="trade.receipt_url" class="receipt-link" target="_blank" rel="noopener noreferrer">{{ trade.receipt_url }}</a>
-        </div>    
-        <div class="trade-value-total">Total: {{ formatCurrency(trade.trade_value.total_price) }}</div>
+        </div>
     </template>
 </modal-with-backdrop>`,
     props: ['trade'],

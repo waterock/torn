@@ -40,12 +40,13 @@
 .awh-trade-value-modal .awh-modal-footer {
     display: flex;
     justify-content: space-between;
+    flex-flow: row-reverse wrap;
+}
+.awh-trade-value-modal .trade-value-total {
+    color: #B53471;
 }
 .awh-trade-value-modal .receipt-link {
     color: #aaa;
     font-size: .8rem;
     text-decoration: none;
-}
-.awh-trade-value-modal .trade-value-total {
-    color: #B53471;
 }
