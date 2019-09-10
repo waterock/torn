@@ -1,6 +1,20 @@
 .awh-trade-value-modal .loading-trade-value {
     text-align: center;
 }
+.awh-trade-value-modal .trade-warnings {
+    list-style: disc;
+    border: 2px solid #F3C359;
+    background-color: #FFFBF2;
+    padding: .7rem 1rem .7rem 2rem;
+    border-radius: .5rem;
+    margin-bottom: 1.25rem;
+}
+.awh-trade-value-modal .trade-warnings > li {
+    color: #81621D;
+    margin: .3rem 0;
+    font-size: .9rem;
+    line-height: 1.2rem;
+}
 .awh-trade-value-modal .trade-components {
     width: 100%;
 }

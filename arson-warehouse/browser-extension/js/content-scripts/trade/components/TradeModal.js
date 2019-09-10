@@ -8,6 +8,9 @@ global.Vue.component('TradeModal', {
             </div>
         </template>
         <template v-else>
+            <ul v-if="warnings.length > 0" class="trade-warnings">
+                <li v-for="warning of warnings" :key="warning">{{ warning }}</li>
+            </ul>
             <trade-components :components="trade.trade_value.components"/>
         </template>
     </template>
@@ -19,6 +22,11 @@ global.Vue.component('TradeModal', {
     </template>
 </modal-with-backdrop>`,
     props: ['trade'],
+    computed: {
+        warnings() {
+            return this.trade.trade_value.warnings;
+        }
+    },
     methods: {
         formatCurrency(value) {
             return '$' + value.toLocaleString('en-US');
