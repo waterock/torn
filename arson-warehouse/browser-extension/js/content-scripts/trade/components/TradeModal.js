@@ -7,6 +7,9 @@ global.Vue.component('TradeModal', {
                 <img src="https://www.torn.com/images/v2/main/ajax-loader.gif" alt="Loading...">
             </div>
         </template>
+        <template v-else-if="trade.error">
+            <p v-html="trade.error"/>
+        </template>
         <template v-else>
             <ul v-if="warnings.length > 0" class="trade-warnings">
                 <li v-for="warning of warnings" :key="warning">{{ warning }}</li>
@@ -14,7 +17,7 @@ global.Vue.component('TradeModal', {
             <trade-components :components="trade.trade_value.components"/>
         </template>
     </template>
-    <template v-if="trade !== null" v-slot:footer>
+    <template v-if="trade !== null && ! trade.error" v-slot:footer>
         <div class="trade-value-total">Total: {{ formatCurrency(trade.trade_value.total_price) }}</div>
         <div class="receipt-link-wrapper">
             <a :href="trade.receipt_url" class="receipt-link" target="_blank" rel="noopener noreferrer">{{ trade.receipt_url }}</a>

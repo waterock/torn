@@ -29,7 +29,9 @@
 }
 .awh-trade-value-modal .trade-components th,
 .awh-trade-value-modal .trade-component td {
-    padding: .15rem 0;
+    padding: .35rem .5rem;
+    line-height: 1.25rem;
+    vertical-align: middle;
 }
 .awh-trade-value-modal .trade-components th:first-child,
 .awh-trade-value-modal .trade-component td:first-child {
@@ -50,6 +52,11 @@
 }
 .awh-trade-value-modal .trade-component-total-price {
     text-align: right;
+}
+@media only screen and (max-width: 420px) {
+    .awh-trade-value-modal .trade-component-total-price {
+        display: none;
+    }
 }
 .awh-trade-value-modal .awh-modal-footer {
     display: flex;

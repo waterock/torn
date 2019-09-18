@@ -16,8 +16,7 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
         const tradeValue = await fetchTradeValue(tradeData);
         emitTradeValue(tab, tradeValue);
     } catch (error) {
-        showAlertInTab(tab, error.hasFriendlyMessage ? error.message : 'Failed to get trade value.');
-        chrome.tabs.sendMessage(tab.id, {action: 'failed-to-calculate-trade-value'});
+        emitTradeValue(tab, {error: error.hasFriendlyMessage ? error.message : 'Failed to get trade value.'});
     }
 });
 
@@ -64,9 +63,15 @@ function fetchTradeValue(tradeData) {
 
     const requestBody = getRequestBody(tradeData);
 
-    return fetch(getBaseUrl() + '/api/v1/trade-value', {method: 'post', body: JSON.stringify(requestBody)}).then(response => {
+    return fetch(getBaseUrl() + '/api/v1/trade-value', {method: 'post', body: JSON.stringify(requestBody)}).then(async (response) => {
         if (response.status === 200) {
             return response.json()
+        }
+        if (response.status === 400) {
+            const responseJson = await response.json();
+            if (typeof responseJson.reason === 'string' && responseJson.reason.length > 0) {
+                throw createErrorWithFriendlyMessage(responseJson.reason);
+            }
         }
         throw createErrorWithFriendlyMessage('Something went wrong on the ArsonWarehouse server (or the service is temporarily down).');
     });

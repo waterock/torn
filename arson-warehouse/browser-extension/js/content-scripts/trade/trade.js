@@ -34,10 +34,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'did-calculate-trade-value' && global.tradeValueModalVue !== null) {
         global.tradeValueModalVue.trade = message.payload;
     }
-
-    if (message.action === 'failed-to-calculate-trade-value' && global.tradeValueModalVue !== null) {
-        global.tradeValueModalVue.closeTradeModal();
-    }
 });
 
 async function getTradeData() {
