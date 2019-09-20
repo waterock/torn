@@ -1,0 +1,88 @@
+.awh-trade-value-modal {
+    .loading-trade-value {
+        text-align: center;
+    }
+
+    .trade-warnings {
+        list-style: disc;
+        border: 2px solid #F3C359;
+        background-color: #FFFBF2;
+        padding: .7rem 1rem .7rem 2rem;
+        border-radius: .5rem;
+        margin-bottom: 1.25rem;
+
+        > li {
+            color: #81621D;
+            margin: .3rem 0;
+            font-size: .9rem;
+            line-height: 1.2rem;
+        }
+    }
+
+    .trade-components {
+        width: 100%;
+
+        thead {
+            text-align: left;
+            font-size: .9rem;
+            color: #777;
+        }
+
+        th, td {
+            padding: .35rem .5rem;
+            line-height: 1.25rem;
+            vertical-align: middle;
+
+            &:first-child {
+                padding-left: 1rem;
+            }
+
+            &:last-child {
+                padding-right: 1rem;
+            }
+        }
+
+        .trade-component {
+            font-size: .9rem;
+            color: #111;
+
+            &:nth-child(odd) {
+                background-color: #f4f4f4;
+            }
+
+            .trade-component-quantity {
+                text-align: right;
+            }
+
+            .trade-component-unit-price {
+                text-align: right;
+            }
+
+            .trade-component-total-price {
+                text-align: right;
+            }
+
+            @media only screen and (max-width: 420px) {
+                .trade-component-total-price {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    .awh-modal-footer {
+        display: flex;
+        justify-content: space-between;
+        flex-flow: row-reverse wrap;
+    }
+
+    .trade-value-total {
+        color: $awh-main-color;
+    }
+
+    .receipt-link {
+        color: #aaa;
+        font-size: .8rem;
+        text-decoration: none;
+    }
+}

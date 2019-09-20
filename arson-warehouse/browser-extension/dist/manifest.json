@@ -21,10 +21,7 @@
     },
     {
       "matches": ["https://www.torn.com/trade.php"],
-      "css": [
-        "js/content-scripts/components/modal.css",
-        "js/content-scripts/trade/components/trade-modal.css"
-      ],
+      "css": ["awh.css"],
       "js": [
         "js/vue.min.js",
         "js/global.js",

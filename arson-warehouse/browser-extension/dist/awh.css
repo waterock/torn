@@ -1,0 +1,155 @@
+html.awh-modal-is-open {
+  overflow: hidden;
+}
+
+.awh-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 100000;
+  background-color: black;
+  opacity: 0.5;
+}
+
+.awh-modal {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 100001;
+  margin: 1rem 0 2.25rem 0;
+  padding: 0.5rem;
+  pointer-events: none;
+}
+@media only screen and (max-width: 600px) {
+  .awh-modal {
+    margin: 0.5rem 0 3.5rem 0;
+  }
+}
+.awh-modal .awh-modal-content {
+  display: flex;
+  flex-direction: column;
+  max-height: 100%;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.3rem;
+  background-color: white;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.3);
+  pointer-events: auto;
+}
+.awh-modal .awh-modal-header {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.awh-modal .awh-modal-header h4 {
+  color: #b53471;
+  margin: 0;
+  font-size: 18.4px;
+  line-height: 1.42857;
+  font-weight: 500;
+}
+.awh-modal .awh-modal-header .close {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  opacity: 0.2;
+  color: black;
+}
+.awh-modal .awh-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+  line-height: 26px;
+}
+.awh-modal .awh-modal-body .loading {
+  text-align: center;
+}
+.awh-modal .awh-modal-footer {
+  border-top: 1px solid #e9ecef;
+  padding: 1rem;
+}
+
+.awh-trade-value-modal .loading-trade-value {
+  text-align: center;
+}
+.awh-trade-value-modal .trade-warnings {
+  list-style: disc;
+  border: 2px solid #F3C359;
+  background-color: #FFFBF2;
+  padding: 0.7rem 1rem 0.7rem 2rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+.awh-trade-value-modal .trade-warnings > li {
+  color: #81621D;
+  margin: 0.3rem 0;
+  font-size: 0.9rem;
+  line-height: 1.2rem;
+}
+.awh-trade-value-modal .trade-components {
+  width: 100%;
+}
+.awh-trade-value-modal .trade-components thead {
+  text-align: left;
+  font-size: 0.9rem;
+  color: #777;
+}
+.awh-trade-value-modal .trade-components th, .awh-trade-value-modal .trade-components td {
+  padding: 0.35rem 0.5rem;
+  line-height: 1.25rem;
+  vertical-align: middle;
+}
+.awh-trade-value-modal .trade-components th:first-child, .awh-trade-value-modal .trade-components td:first-child {
+  padding-left: 1rem;
+}
+.awh-trade-value-modal .trade-components th:last-child, .awh-trade-value-modal .trade-components td:last-child {
+  padding-right: 1rem;
+}
+.awh-trade-value-modal .trade-components .trade-component {
+  font-size: 0.9rem;
+  color: #111;
+}
+.awh-trade-value-modal .trade-components .trade-component:nth-child(odd) {
+  background-color: #f4f4f4;
+}
+.awh-trade-value-modal .trade-components .trade-component .trade-component-quantity {
+  text-align: right;
+}
+.awh-trade-value-modal .trade-components .trade-component .trade-component-unit-price {
+  text-align: right;
+}
+.awh-trade-value-modal .trade-components .trade-component .trade-component-total-price {
+  text-align: right;
+}
+@media only screen and (max-width: 420px) {
+  .awh-trade-value-modal .trade-components .trade-component .trade-component-total-price {
+    display: none;
+  }
+}
+.awh-trade-value-modal .awh-modal-footer {
+  display: flex;
+  justify-content: space-between;
+  flex-flow: row-reverse wrap;
+}
+.awh-trade-value-modal .trade-value-total {
+  color: #b53471;
+}
+.awh-trade-value-modal .receipt-link {
+  color: #aaa;
+  font-size: 0.8rem;
+  text-decoration: none;
+}
