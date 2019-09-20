@@ -49,23 +49,23 @@
             &:nth-child(odd) {
                 background-color: #f4f4f4;
             }
+        }
 
-            .trade-component-quantity {
-                text-align: right;
-            }
+        .trade-component-quantity {
+            text-align: right;
+        }
 
-            .trade-component-unit-price {
-                text-align: right;
-            }
+        .trade-component-unit-price {
+            text-align: right;
+        }
 
+        .trade-component-total-price {
+            text-align: right;
+        }
+
+        @media only screen and (max-width: 420px) {
             .trade-component-total-price {
-                text-align: right;
-            }
-
-            @media only screen and (max-width: 420px) {
-                .trade-component-total-price {
-                    display: none;
-                }
+                display: none;
             }
         }
     }

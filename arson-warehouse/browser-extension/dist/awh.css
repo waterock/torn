@@ -126,17 +126,17 @@ html.awh-modal-is-open {
 .awh-trade-value-modal .trade-components .trade-component:nth-child(odd) {
   background-color: #f4f4f4;
 }
-.awh-trade-value-modal .trade-components .trade-component .trade-component-quantity {
+.awh-trade-value-modal .trade-components .trade-component-quantity {
   text-align: right;
 }
-.awh-trade-value-modal .trade-components .trade-component .trade-component-unit-price {
+.awh-trade-value-modal .trade-components .trade-component-unit-price {
   text-align: right;
 }
-.awh-trade-value-modal .trade-components .trade-component .trade-component-total-price {
+.awh-trade-value-modal .trade-components .trade-component-total-price {
   text-align: right;
 }
 @media only screen and (max-width: 420px) {
-  .awh-trade-value-modal .trade-components .trade-component .trade-component-total-price {
+  .awh-trade-value-modal .trade-components .trade-component-total-price {
     display: none;
   }
 }
