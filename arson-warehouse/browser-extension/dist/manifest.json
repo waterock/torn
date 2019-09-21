@@ -28,8 +28,11 @@
         "js/global.js",
         "js/content-scripts/components/ModalWithBackdrop.js",
         "js/content-scripts/trade/components/TradeModal.js",
+        "js/content-scripts/trade/components/TradeOverview.js",
         "js/content-scripts/trade/components/TradeComponents.js",
         "js/content-scripts/trade/components/TradeComponent.js",
+        "js/content-scripts/trade/components/TradeMessages.js",
+        "js/content-scripts/trade/components/TradeMessage.js",
         "js/content-scripts/trade/TradeSide.js",
         "js/content-scripts/trade/TradeItem.js",
         "js/content-scripts/trade/trade.js"

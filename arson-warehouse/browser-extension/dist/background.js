@@ -12,11 +12,11 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
     }
 
     try {
-        const tradeData = await getTradeData(tab);
-        const tradeValue = await fetchTradeValue(tradeData);
-        emitTradeValue(tab, tradeValue);
+        const tradeDataFromPage = await getTradeDataFromPage(tab);
+        const tradeValueResponse = await fetchTradeValue(tradeDataFromPage);
+        emitTradeValueResponse(tab, tradeValueResponse);
     } catch (error) {
-        emitTradeValue(tab, {error: error.hasFriendlyMessage ? error.message : 'Failed to get trade value.'});
+        emitTradeValueResponse(tab, {error: error.hasFriendlyMessage ? error.message : 'Failed to get trade value.'});
     }
 });
 
@@ -30,7 +30,7 @@ function sendEquipmentReportToArsonWarehouse(report) {
     return fetch(getBaseUrl() + '/api/v1/equipment-stats', {method: 'post', body: JSON.stringify(report)});
 }
 
-function getTradeData(tab) {
+function getTradeDataFromPage(tab) {
     if (window.userAgentIsYandex) {
         return getTradeDataForYandex(tab);
     }
@@ -77,10 +77,10 @@ function fetchTradeValue(tradeData) {
     });
 }
 
-function emitTradeValue(tab, tradeValue) {
+function emitTradeValueResponse(tab, tradeValueResponse) {
     chrome.tabs.sendMessage(tab.id, {
-        action: 'did-calculate-trade-value',
-        payload: tradeValue,
+        action: 'did-get-trade-value-response',
+        payload: tradeValueResponse,
     });
 }
 

@@ -5,14 +5,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         const tradeModalVueRoot = document.createElement('div');
         tradeModalVueRoot.className = 'awh-trade-modal-vue-root';
         tradeModalVueRoot.setAttribute('v-cloak', '');
-        tradeModalVueRoot.innerHTML = '<trade-modal @close="closeTradeModal" :trade="trade"></trade-modal>';
+        tradeModalVueRoot.innerHTML = '<trade-modal @close="closeTradeModal" :trade-value-response="tradeValueResponse"></trade-modal>';
         document.body.appendChild(tradeModalVueRoot);
 
         global.tradeValueModalVue = new global.Vue({
             el: tradeModalVueRoot,
             data() {
                 return {
-                    trade: null,
+                    tradeValueResponse: null,
                 };
             },
             created() {
@@ -31,8 +31,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return browserAgnosticResponse(getTradeData(), sendResponse);
     }
 
-    if (message.action === 'did-calculate-trade-value' && global.tradeValueModalVue !== null) {
-        global.tradeValueModalVue.trade = message.payload;
+    if (message.action === 'did-get-trade-value-response' && global.tradeValueModalVue !== null) {
+        global.tradeValueModalVue.tradeValueResponse = message.payload;
     }
 });
 
