@@ -5,8 +5,7 @@
   "author": "Sulsay",
   "permissions": [
     "activeTab",
-    "https://arsonwarehouse.com/",
-    "http://arsonwarehouse.loc/"
+    "https://arsonwarehouse.com/"
   ],
   "background": {
     "scripts": [
