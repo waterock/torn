@@ -1,8 +1,12 @@
 global.Vue.component('TradeMessages', {
     template: `
 <div class="trade-messages">
-    <trade-message v-for="message of messages" :key="message.name" :message="message"/>
-    <p class="custom-messages-notice">Custom messages will be added soon!</p>
+    <template v-if="messages.length > 0">
+        <trade-message v-for="message of messages" :key="message.name" :message="message"/>
+    </template>
+    <template v-else>
+        <p class="custom-messages-notice">Add copyable message templates on <a href="https://arsonwarehouse.com/login" target="_blank" rel="noopener noreferrer">arsonwarehouse.com</a>.</p>
+    </template>
 </div>`,
     props: ['messages'],
 });

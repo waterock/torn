@@ -156,7 +156,7 @@ html.awh-modal-is-open {
   padding-top: 0.4rem;
 }
 .awh-trade-value-modal .trade-messages .custom-messages-notice {
-  color: #aaa;
+  margin-top: -0.35rem;
 }
 .awh-trade-value-modal .trade-message {
   margin-bottom: 1rem;
