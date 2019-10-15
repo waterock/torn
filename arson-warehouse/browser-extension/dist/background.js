@@ -92,9 +92,11 @@ function getRequestBody(tradeData) {
     const currentUserIsBuyer = tradeData.currentUserItems.length === 0 && tradeData.otherUserItems.length > 0;
     if (currentUserIsBuyer) {
         requestBody.buyer = tradeData.currentUserId;
+        requestBody.seller = tradeData.otherUserName;
         requestBody.items = tradeData.otherUserItems;
     } else {
         requestBody.buyer = tradeData.otherUserName;
+        requestBody.seller = tradeData.currentUserId;
         requestBody.items = tradeData.currentUserItems;
     }
 
