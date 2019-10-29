@@ -12,8 +12,9 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
     }
 
     try {
+        const tradeId = +tab.url.match(/ID=(\d+)/)[1];
         const tradeDataFromPage = await getTradeDataFromPage(tab);
-        const tradeValueResponse = await fetchTradeValue(tradeDataFromPage);
+        const tradeValueResponse = await fetchTradeValue(tradeId, tradeDataFromPage);
         emitTradeValueResponse(tab, tradeValueResponse);
     } catch (error) {
         emitTradeValueResponse(tab, {error: error.hasFriendlyMessage ? error.message : 'Failed to get trade value.'});
@@ -53,7 +54,7 @@ function getTradeDataForYandex(tab) {
     });
 }
 
-function fetchTradeValue(tradeData) {
+function fetchTradeValue(tradeId, tradeData) {
     if (tradeData.currentUserItems.length + tradeData.otherUserItems.length === 0) {
         throw createErrorWithFriendlyMessage('Neither side contains items.');
     }
@@ -61,9 +62,9 @@ function fetchTradeValue(tradeData) {
         throw createErrorWithFriendlyMessage('Both sides contain items - this is not supported.');
     }
 
-    const requestBody = getRequestBody(tradeData);
+    const requestBody = getRequestBody(tradeId, tradeData);
 
-    return fetch(getBaseUrl() + '/api/v1/trade-value', {method: 'post', body: JSON.stringify(requestBody)}).then(async (response) => {
+    return fetch(getBaseUrl() + '/api/v1/trades', {method: 'post', body: JSON.stringify(requestBody)}).then(async (response) => {
         if (response.status === 200) {
             return response.json()
         }
@@ -84,8 +85,9 @@ function emitTradeValueResponse(tab, tradeValueResponse) {
     });
 }
 
-function getRequestBody(tradeData) {
+function getRequestBody(tradeId, tradeData) {
     const requestBody = {
+        trade_id: tradeId,
         plugin_version: chrome.runtime.getManifest().version,
     };
 
