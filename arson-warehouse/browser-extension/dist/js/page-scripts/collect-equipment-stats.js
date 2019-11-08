@@ -15,10 +15,12 @@
         }
 
         const equipmentReport = {
-            equipmentId: parseInt(queryParams.armouryID, 10),
-            itemId: parseInt(queryParams.itemID, 10),
             reporterId: parseInt(window.getCookie('uid'), 10),
-            stats
+            equipment: {
+                armoury_id: parseInt(queryParams.armouryID, 10),
+                item_id: parseInt(queryParams.itemID, 10),
+                stats,
+            },
         };
 
         currentScript.dispatchEvent(new CustomEvent('arson-warehouse-event-from-page', {

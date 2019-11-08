@@ -28,7 +28,13 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 function sendEquipmentReportToArsonWarehouse(report) {
-    return fetch(getBaseUrl() + '/api/v1/equipment-stats', {method: 'post', body: JSON.stringify(report)});
+    return fetch(getBaseUrl() + '/api/v1/equipment-reports', {
+        headers: new Headers({
+            Authorization: 'Basic ' + btoa(`${report.reporterId}:`),
+        }),
+        method: 'post',
+        body: JSON.stringify(report.equipment),
+    });
 }
 
 function getTradeDataFromPage(tab) {
