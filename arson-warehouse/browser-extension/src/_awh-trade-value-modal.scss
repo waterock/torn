@@ -3,141 +3,182 @@
         text-align: center;
     }
 
-    .trade-tabs {
-        margin-bottom: .75rem;
+    .trade-warnings {
+        border: 2px solid #F3C359;
+        background-color: #FFFBF2;
+        border-radius: .5rem;
+        margin-bottom: 1rem;
 
-        a {
-            color: #999;
-            font-size: .9rem;
-            text-decoration: none;
+        ul {
+            list-style: disc;
+            padding: .7rem 1rem .7rem 2rem;
 
-            &.active {
-                color: $awh-main-color;
-                cursor: default;
+            li {
+                color: #81621D;
+                margin: .3rem 0;
+                font-size: .9rem;
+                line-height: 1.2rem;
             }
         }
     }
 
-    .trade-warnings {
-        list-style: disc;
-        border: 2px solid #F3C359;
-        background-color: #FFFBF2;
-        padding: .7rem 1rem .7rem 2rem;
-        border-radius: .5rem;
-        margin-bottom: 1.25rem;
+    .trade-total {
+        padding: 1rem 0 1.5rem 0;
 
-        > li {
-            color: #81621D;
-            margin: .3rem 0;
-            font-size: .9rem;
-            line-height: 1.2rem;
+        .total-value {
+            color: $awh-main-color;
+            font-size: 1.2rem;
+            text-align: center;
+            margin: 0 .25rem;
+        }
+
+        .trade-total-actions {
+            display: flex;
+            justify-content: center;
+
+            a {
+                color: $awh-accent-color;
+                margin: 0 .75rem;
+                font-size: .9rem;
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
         }
     }
 
     .trade-components {
-        width: 100%;
-
-        thead {
-            text-align: left;
+        .back-to-overview-button {
+            color: $awh-accent-color;
             font-size: .9rem;
-            color: #777;
+            text-decoration: none;
+            position: relative;
+            top: -.4rem;
+
+            &:hover {
+                text-decoration: underline;
+            }
         }
 
-        th, td {
-            padding: .35rem .5rem;
-            line-height: 1.25rem;
-            vertical-align: middle;
+        .trade-components-table {
+            width: 100%;
 
-            &:first-child {
-                padding-left: 1rem;
+            thead {
+                text-align: left;
+                font-size: .9rem;
+                color: #777;
             }
 
-            &:last-child {
+            th, td {
+                padding: .35rem .5rem;
+                line-height: 1.25rem;
+                vertical-align: middle;
+
+                &:first-child {
+                    padding-left: 1rem;
+                }
+            }
+
+            .trade-component {
+                font-size: .9rem;
+                color: #111;
+
+                &:nth-child(odd) {
+                    background-color: #f4f4f4;
+                }
+            }
+
+            .trade-component-quantity {
+                text-align: right;
+            }
+
+            .trade-component-unit-price {
+                text-align: right;
+            }
+
+            .trade-component-total-price {
+                padding-right: 1rem;
+                text-align: right;
+            }
+
+            .trade-components-grand-total {
+                color: $awh-main-color;
+                text-align: right;
+                padding-top: .75rem;
                 padding-right: 1rem;
             }
-        }
 
-        .trade-component {
-            font-size: .9rem;
-            color: #111;
-
-            &:nth-child(odd) {
-                background-color: #f4f4f4;
-            }
-        }
-
-        .trade-component-quantity {
-            text-align: right;
-        }
-
-        .trade-component-unit-price {
-            text-align: right;
-        }
-
-        .trade-component-total-price {
-            text-align: right;
-        }
-
-        @media only screen and (max-width: 420px) {
-            .trade-component-total-price {
-                display: none;
+            @media only screen and (max-width: 420px) {
+                .trade-component-quantity {
+                    padding-right: 1rem;
+                }
+                .trade-component-total-price {
+                    display: none;
+                }
             }
         }
     }
 
     .trade-messages {
-        padding-top: .4rem;
-
         .custom-messages-notice {
-            margin-top: -.35rem;
+            margin-top: 1rem;
+            font-size: .8rem;
+            line-height: 1.25;
+
+            a {
+                color: $awh-accent-color;
+                text-decoration: none;
+
+                &:hover {
+                    text-decoration: underline;
+                }
+            }
         }
     }
 
     .trade-message {
-        margin-bottom: 1rem;
+        position: relative;
         font-size: .8rem;
+        margin-bottom: .5rem;
 
         .trade-message-name {
             font-weight: 600;
+            line-height: 1.6;
             color: #aaa;
-            line-height: 1rem;
-            margin-bottom: .15rem;
         }
 
         .trade-message-body {
-            line-height: 1.25rem;
-            margin-bottom: -.2rem;
+            margin-left: 1.3rem;
+            padding: 0 .1rem;
+            line-height: 1.4;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            transition: background-color 300ms;
         }
 
         .trade-message-copy {
+            position: absolute;
+            left: 0;
+            top: 1rem;
             text-decoration: none;
-            color: $awh-main-color;
+            font-size: .9rem;
 
-            &:not(.temporarily-disabled):hover .copy-text {
-                text-decoration: underline;
-            }
-
-            &.temporarily-disabled {
-                color: #aaa;
-                text-decoration: none;
-                cursor: default;
+            .copy-icon {
+                position: absolute;
+                left: 0;
+                top: 0;
             }
         }
-    }
 
-    .awh-modal-footer {
-        display: flex;
-        justify-content: space-between;
-        flex-flow: row-reverse wrap;
-    }
+        &:not(.copy-button-enabled) .trade-message-copy {
+            cursor: default;
+        }
 
-    .trade-value-total {
-        color: $awh-main-color;
-    }
-
-    .receipt-link {
-        color: #aaa;
-        font-size: .8rem;
-        text-decoration: none;
+        &.copied .trade-message-body {
+            background-color: #F9F68B;
+        }
     }
 }

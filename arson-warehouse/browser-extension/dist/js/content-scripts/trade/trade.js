@@ -1,5 +1,19 @@
 global.tradeValueModalVue = null;
 
+(async function () {
+    if (window.location.search.indexOf('money=') > -1) {
+        const moneyMatch = window.location.search.match(/money=(\d+)/);
+        if (! Array.isArray(moneyMatch)) {
+            return;
+        }
+
+        const money = parseInt(moneyMatch[1], 10);
+        const moneyInput = await truthy(() => document.querySelector('input.input-money'));
+        moneyInput.value = money;
+        moneyInput.focus();
+    }
+})();
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'get-trade-data') {
         const tradeModalVueRoot = document.createElement('div');

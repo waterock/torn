@@ -2,15 +2,22 @@ html.awh-modal-is-open {
   overflow: hidden;
 }
 
+.awh-modal-with-backdrop.behind-chats .awh-modal-backdrop {
+  z-index: 100000;
+}
+.awh-modal-with-backdrop.behind-chats .awh-modal {
+  z-index: 100001;
+}
+
 .awh-modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  z-index: 100000;
+  z-index: 1000000;
   background-color: black;
-  opacity: 0.5;
+  opacity: 0.65;
 }
 
 .awh-modal {
@@ -21,14 +28,14 @@ html.awh-modal-is-open {
   left: 0;
   bottom: 0;
   right: 0;
-  z-index: 100001;
+  z-index: 1000001;
   margin: 1rem 0 2.25rem 0;
   padding: 0.5rem;
   pointer-events: none;
 }
 @media only screen and (max-width: 600px) {
   .awh-modal {
-    margin: 0.5rem 0 3.5rem 0;
+    margin: 0.5rem 0 3rem 0;
   }
 }
 .awh-modal .awh-modal-content {
@@ -83,117 +90,168 @@ html.awh-modal-is-open {
   padding: 1rem;
 }
 
+.awh-bring-chats-to-front-button {
+  display: block;
+  position: fixed;
+  bottom: 0;
+  right: 0.5rem;
+  width: 2.75rem;
+  height: 2.5rem;
+  background-color: #fffd;
+  border-top-left-radius: 0.3rem;
+  border-top-right-radius: 0.3rem;
+  z-index: 1000001;
+  font-size: 1.4rem;
+  text-align: center;
+  line-height: 3rem;
+  border-bottom: 3px solid #b53471;
+  text-decoration: none;
+}
+
 .awh-trade-value-modal .loading-trade-value {
   text-align: center;
 }
-.awh-trade-value-modal .trade-tabs {
-  margin-bottom: 0.75rem;
-}
-.awh-trade-value-modal .trade-tabs a {
-  color: #999;
-  font-size: 0.9rem;
-  text-decoration: none;
-}
-.awh-trade-value-modal .trade-tabs a.active {
-  color: #b53471;
-  cursor: default;
-}
 .awh-trade-value-modal .trade-warnings {
-  list-style: disc;
   border: 2px solid #F3C359;
   background-color: #FFFBF2;
-  padding: 0.7rem 1rem 0.7rem 2rem;
   border-radius: 0.5rem;
-  margin-bottom: 1.25rem;
+  margin-bottom: 1rem;
 }
-.awh-trade-value-modal .trade-warnings > li {
+.awh-trade-value-modal .trade-warnings ul {
+  list-style: disc;
+  padding: 0.7rem 1rem 0.7rem 2rem;
+}
+.awh-trade-value-modal .trade-warnings ul li {
   color: #81621D;
   margin: 0.3rem 0;
   font-size: 0.9rem;
   line-height: 1.2rem;
 }
-.awh-trade-value-modal .trade-components {
+.awh-trade-value-modal .trade-total {
+  padding: 1rem 0 1.5rem 0;
+}
+.awh-trade-value-modal .trade-total .total-value {
+  color: #b53471;
+  font-size: 1.2rem;
+  text-align: center;
+  margin: 0 0.25rem;
+}
+.awh-trade-value-modal .trade-total .trade-total-actions {
+  display: flex;
+  justify-content: center;
+}
+.awh-trade-value-modal .trade-total .trade-total-actions a {
+  color: #369fd4;
+  margin: 0 0.75rem;
+  font-size: 0.9rem;
+  text-decoration: none;
+}
+.awh-trade-value-modal .trade-total .trade-total-actions a:hover {
+  text-decoration: underline;
+}
+.awh-trade-value-modal .trade-components .back-to-overview-button {
+  color: #369fd4;
+  font-size: 0.9rem;
+  text-decoration: none;
+  position: relative;
+  top: -0.4rem;
+}
+.awh-trade-value-modal .trade-components .back-to-overview-button:hover {
+  text-decoration: underline;
+}
+.awh-trade-value-modal .trade-components .trade-components-table {
   width: 100%;
 }
-.awh-trade-value-modal .trade-components thead {
+.awh-trade-value-modal .trade-components .trade-components-table thead {
   text-align: left;
   font-size: 0.9rem;
   color: #777;
 }
-.awh-trade-value-modal .trade-components th, .awh-trade-value-modal .trade-components td {
+.awh-trade-value-modal .trade-components .trade-components-table th, .awh-trade-value-modal .trade-components .trade-components-table td {
   padding: 0.35rem 0.5rem;
   line-height: 1.25rem;
   vertical-align: middle;
 }
-.awh-trade-value-modal .trade-components th:first-child, .awh-trade-value-modal .trade-components td:first-child {
+.awh-trade-value-modal .trade-components .trade-components-table th:first-child, .awh-trade-value-modal .trade-components .trade-components-table td:first-child {
   padding-left: 1rem;
 }
-.awh-trade-value-modal .trade-components th:last-child, .awh-trade-value-modal .trade-components td:last-child {
-  padding-right: 1rem;
-}
-.awh-trade-value-modal .trade-components .trade-component {
+.awh-trade-value-modal .trade-components .trade-components-table .trade-component {
   font-size: 0.9rem;
   color: #111;
 }
-.awh-trade-value-modal .trade-components .trade-component:nth-child(odd) {
+.awh-trade-value-modal .trade-components .trade-components-table .trade-component:nth-child(odd) {
   background-color: #f4f4f4;
 }
-.awh-trade-value-modal .trade-components .trade-component-quantity {
+.awh-trade-value-modal .trade-components .trade-components-table .trade-component-quantity {
   text-align: right;
 }
-.awh-trade-value-modal .trade-components .trade-component-unit-price {
+.awh-trade-value-modal .trade-components .trade-components-table .trade-component-unit-price {
   text-align: right;
 }
-.awh-trade-value-modal .trade-components .trade-component-total-price {
+.awh-trade-value-modal .trade-components .trade-components-table .trade-component-total-price {
+  padding-right: 1rem;
   text-align: right;
+}
+.awh-trade-value-modal .trade-components .trade-components-table .trade-components-grand-total {
+  color: #b53471;
+  text-align: right;
+  padding-top: 0.75rem;
+  padding-right: 1rem;
 }
 @media only screen and (max-width: 420px) {
-  .awh-trade-value-modal .trade-components .trade-component-total-price {
+  .awh-trade-value-modal .trade-components .trade-components-table .trade-component-quantity {
+    padding-right: 1rem;
+  }
+  .awh-trade-value-modal .trade-components .trade-components-table .trade-component-total-price {
     display: none;
   }
 }
-.awh-trade-value-modal .trade-messages {
-  padding-top: 0.4rem;
-}
 .awh-trade-value-modal .trade-messages .custom-messages-notice {
-  margin-top: -0.35rem;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  line-height: 1.25;
+}
+.awh-trade-value-modal .trade-messages .custom-messages-notice a {
+  color: #369fd4;
+  text-decoration: none;
+}
+.awh-trade-value-modal .trade-messages .custom-messages-notice a:hover {
+  text-decoration: underline;
 }
 .awh-trade-value-modal .trade-message {
-  margin-bottom: 1rem;
+  position: relative;
   font-size: 0.8rem;
+  margin-bottom: 0.5rem;
 }
 .awh-trade-value-modal .trade-message .trade-message-name {
   font-weight: 600;
+  line-height: 1.6;
   color: #aaa;
-  line-height: 1rem;
-  margin-bottom: 0.15rem;
 }
 .awh-trade-value-modal .trade-message .trade-message-body {
-  line-height: 1.25rem;
-  margin-bottom: -0.2rem;
+  margin-left: 1.3rem;
+  padding: 0 0.1rem;
+  line-height: 1.4;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: background-color 300ms;
 }
 .awh-trade-value-modal .trade-message .trade-message-copy {
+  position: absolute;
+  left: 0;
+  top: 1rem;
   text-decoration: none;
-  color: #b53471;
+  font-size: 0.9rem;
 }
-.awh-trade-value-modal .trade-message .trade-message-copy:not(.temporarily-disabled):hover .copy-text {
-  text-decoration: underline;
+.awh-trade-value-modal .trade-message .trade-message-copy .copy-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
 }
-.awh-trade-value-modal .trade-message .trade-message-copy.temporarily-disabled {
-  color: #aaa;
-  text-decoration: none;
+.awh-trade-value-modal .trade-message:not(.copy-button-enabled) .trade-message-copy {
   cursor: default;
 }
-.awh-trade-value-modal .awh-modal-footer {
-  display: flex;
-  justify-content: space-between;
-  flex-flow: row-reverse wrap;
-}
-.awh-trade-value-modal .trade-value-total {
-  color: #b53471;
-}
-.awh-trade-value-modal .receipt-link {
-  color: #aaa;
-  font-size: 0.8rem;
-  text-decoration: none;
+.awh-trade-value-modal .trade-message.copied .trade-message-body {
+  background-color: #F9F68B;
 }

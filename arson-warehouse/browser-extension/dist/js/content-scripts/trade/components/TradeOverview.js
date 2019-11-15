@@ -1,10 +1,9 @@
 global.Vue.component('TradeOverview', {
     template: `
 <div class="trade-overview">
-    <ul v-if="warnings.length > 0" class="trade-warnings">
-        <li v-for="warning of warnings" :key="warning">{{ warning }}</li>
-    </ul>
-    <trade-components :components="components"/>
+    <trade-warnings v-if="warnings.length > 0" :warnings="warnings"/>
+    <trade-total :total-value="totalValue" :trade-id="tradeId" @view-components-button-clicked="$emit('view-components-button-clicked')"/>
+    <trade-messages :messages="messages" :has-custom-copyable-messages="hasCustomCopyableMessages"/>
 </div>`,
-    props: ['warnings', 'components'],
+    props: ['tradeId', 'warnings', 'totalValue', 'messages', 'hasCustomCopyableMessages'],
 });

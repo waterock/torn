@@ -11,36 +11,34 @@ global.Vue.component('TradeModal', {
             <p v-html="tradeValueResponse.error"/>
         </template>
         <template v-else>
-            <div v-if="isRequestedByBuyer" class="trade-tabs">
-                <a :href="mode !== 'overview' ? '#' : null" :class="{active: mode === 'overview'}" @click.prevent="setMode('overview')">Overview</a>
-                <a :href="mode !== 'messages' ? '#' : null" :class="{active: mode === 'messages'}" @click.prevent="setMode('messages')">Messages</a>
-            </div>
-            <trade-overview v-if="mode === 'overview'" :warnings="trade.warnings" :components="trade.components"/>
-            <trade-messages v-if="messages !== null && mode === 'messages'" :messages="messages"/>
+            <trade-overview
+                v-if="mode === 'overview'"
+                :trade-id="trade.id"
+                :warnings="trade.warnings"
+                :total-value="trade.total_price"
+                :messages="messages"
+                :has-custom-copyable-messages="tradeValueResponse.has_custom_copyable_messages"
+                @view-components-button-clicked="setMode('components')"
+            />
+            <trade-components
+                v-if="mode === 'components'"
+                :components="trade.components"
+                :grand-total="trade.total_price"
+                :allow-user-to-return-to-overview="tradeValueResponse.requested_by_buyer"
+                @back-to-overview-button-clicked="setMode('overview')"
+            />
         </template>
-    </template>
-    <template v-if="! loading && ! tradeValueResponse.error" v-slot:footer>
-        <div class="trade-value-total">Total: {{ formatCurrency(trade.total_price) }}</div>
-        <div v-if="isRequestedByBuyer && tradeValueResponse.receipt_url" class="receipt-link-wrapper">
-            <a :href="tradeValueResponse.receipt_url" class="receipt-link" target="_blank" rel="noopener noreferrer">{{ tradeValueResponse.receipt_url }}</a>
-        </div>
     </template>
 </modal-with-backdrop>`,
     props: ['tradeValueResponse'],
     data() {
         return {
-            mode: 'overview',
+            mode: null,
         };
     },
     computed: {
         loading() {
             return this.tradeValueResponse === null;
-        },
-        isRequestedByBuyer() {
-            if (this.loading) {
-                return false;
-            }
-            return this.tradeValueResponse.requested_by_buyer || false;
         },
         trade() {
             if (this.loading) {
@@ -57,13 +55,19 @@ global.Vue.component('TradeModal', {
     },
     methods: {
         setMode(mode) {
-            if (! ['overview', 'messages'].includes(mode)) {
+            if (! ['overview', 'components'].includes(mode)) {
                 return;
             }
             this.mode = mode;
-        },
-        formatCurrency(value) {
-            return '$' + value.toLocaleString('en-US');
         }
+    },
+    watch: {
+        tradeValueResponse() {
+            if (this.tradeValueResponse.requested_by_buyer) {
+                this.setMode('overview');
+            } else {
+                this.setMode('components');
+            }
+        },
     }
 });
