@@ -131,10 +131,17 @@ html.awh-modal-is-open {
   padding: 1rem 0 1.5rem 0;
 }
 .awh-trade-value-modal .trade-total .total-value {
+  display: flex;
+  justify-content: center;
   color: #b53471;
   font-size: 1.2rem;
-  text-align: center;
   margin: 0 0.25rem;
+}
+.awh-trade-value-modal .trade-total .numeric-trade-value {
+  transition: background-color 300ms;
+}
+.awh-trade-value-modal .trade-total .numeric-trade-value.highlighted {
+  background-color: #f9f68b;
 }
 .awh-trade-value-modal .trade-total .trade-total-actions {
   display: flex;
@@ -146,7 +153,7 @@ html.awh-modal-is-open {
   font-size: 0.9rem;
   text-decoration: none;
 }
-.awh-trade-value-modal .trade-total .trade-total-actions a:hover {
+.awh-trade-value-modal .trade-total .trade-total-actions a:hover .button-text {
   text-decoration: underline;
 }
 .awh-trade-value-modal .trade-components .back-to-overview-button {
@@ -253,5 +260,5 @@ html.awh-modal-is-open {
   cursor: default;
 }
 .awh-trade-value-modal .trade-message.copied .trade-message-body {
-  background-color: #F9F68B;
+  background-color: #f9f68b;
 }

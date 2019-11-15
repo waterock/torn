@@ -1,3 +1,5 @@
+$copy-highlight-color: #f9f68b;
+
 .awh-trade-value-modal {
     .loading-trade-value {
         text-align: center;
@@ -26,10 +28,19 @@
         padding: 1rem 0 1.5rem 0;
 
         .total-value {
+            display: flex;
+            justify-content: center;
             color: $awh-main-color;
             font-size: 1.2rem;
-            text-align: center;
             margin: 0 .25rem;
+        }
+
+        .numeric-trade-value {
+            transition: background-color 300ms;
+
+            &.highlighted {
+                background-color: $copy-highlight-color;
+            }
         }
 
         .trade-total-actions {
@@ -42,7 +53,7 @@
                 font-size: .9rem;
                 text-decoration: none;
 
-                &:hover {
+                &:hover .button-text {
                     text-decoration: underline;
                 }
             }
@@ -178,7 +189,7 @@
         }
 
         &.copied .trade-message-body {
-            background-color: #F9F68B;
+            background-color: $copy-highlight-color;
         }
     }
 }

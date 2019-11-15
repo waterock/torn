@@ -1,6 +1,6 @@
 global.Vue.component('TradeModal', {
     template: `
-<modal-with-backdrop title="Trade value" modal-class="awh-trade-value-modal" @close-button-pressed="$emit('close')" @backdrop-pressed="$emit('close')">
+<modal-with-backdrop title="Trade value" modal-class="awh-trade-value-modal" :force-behind-chats="forceBehindChats" @close-button-pressed="$emit('close')" @backdrop-pressed="$emit('close')">
     <template v-slot:body>
         <template v-if="loading">
             <div class="loading-trade-value">
@@ -34,6 +34,7 @@ global.Vue.component('TradeModal', {
     data() {
         return {
             mode: null,
+            forceBehindChats: false,
         };
     },
     computed: {
@@ -63,6 +64,10 @@ global.Vue.component('TradeModal', {
     },
     watch: {
         tradeValueResponse() {
+            if (this.tradeValueResponse.force_behind_chats === true) {
+                this.forceBehindChats = true;
+            }
+
             if (this.tradeValueResponse.requested_by_buyer) {
                 this.setMode('overview');
             } else {

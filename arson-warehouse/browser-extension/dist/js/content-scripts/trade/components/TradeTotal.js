@@ -1,22 +1,32 @@
 global.Vue.component('TradeTotal', {
     template: `
 <div class="trade-total">
-    <div class="total-value">{{ formatCurrency(totalValue) }}</div>
+    <div class="total-value">
+        <span>$</span>
+        <span :class="['numeric-trade-value', {'highlighted' : highlightingNumericTradeValue}]">{{ formatCurrencyWithoutDollarSymbol(totalValue) }}</span>
+    </div>
     <div class="trade-total-actions">
-        <a href="#" @click.prevent="enterMoney" class="enter-money" title="Enter this value into the money field">Enter</a>
-        <a href="#" @click.prevent="$emit('view-components-button-clicked')" title="View individual prices">View list</a>
+        <copy-button :text-to-copy="formatCurrencyWithoutDollarSymbol(totalValue)" @copied="didCopyTradeValue">
+            <a href="#" @click.prevent class="copy-trade-value" title="Copy the value to your clipboard">📋 <span class="button-text">Copy</span></a>
+        </copy-button>
+        <a href="#" @click.prevent="$emit('view-components-button-clicked')" title="View individual prices">📜 <span class="button-text">View list</span></a>
     </div>
 </div>`,
     props: ['tradeId', 'totalValue'],
+    data() {
+        return {
+            highlightingNumericTradeValue: false,
+        };
+    },
     methods: {
-        enterMoney() {
-            window.location = `https://www.torn.com/trade.php?money=${this.totalValue}#step=addmoney&ID=${this.tradeId}`;
-            if (window.location.search.indexOf('money=') > -1) {
-                window.location.reload();
-            }
+        didCopyTradeValue() {
+            this.highlightingNumericTradeValue = true;
+            setTimeout(() => {
+                this.highlightingNumericTradeValue = false;
+            }, 1500);
         },
-        formatCurrency(value) {
-            return '$' + value.toLocaleString('en-US');
+        formatCurrencyWithoutDollarSymbol(value) {
+            return value.toLocaleString('en-US');
         },
     },
 });
