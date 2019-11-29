@@ -244,6 +244,13 @@ html.awh-modal-is-open {
   text-overflow: ellipsis;
   transition: background-color 300ms;
 }
+.awh-trade-value-modal .trade-message .trade-message-body .receipt-link {
+  color: #363636;
+  text-decoration: underline;
+}
+.awh-trade-value-modal .trade-message .trade-message-body .receipt-link:hover {
+  color: #369fd4;
+}
 .awh-trade-value-modal .trade-message .trade-message-copy {
   position: absolute;
   left: 0;

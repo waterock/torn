@@ -168,6 +168,15 @@ $copy-highlight-color: #f9f68b;
             white-space: nowrap;
             text-overflow: ellipsis;
             transition: background-color 300ms;
+
+            .receipt-link {
+                color: #363636;
+                text-decoration: underline;
+
+                &:hover {
+                    color: $awh-accent-color;
+                }
+            }
         }
 
         .trade-message-copy {

@@ -26,9 +26,5 @@ global.Vue.component('TradeComponents', {
     </table>
 </div>`,
     props: ['components', 'grandTotal', 'allowUserToReturnToOverview'],
-    methods: {
-        formatCurrency(value) {
-            return '$' + value.toLocaleString('en-US');
-        },
-    }
+    mixins: [vueMixins.formatCurrency],
 });

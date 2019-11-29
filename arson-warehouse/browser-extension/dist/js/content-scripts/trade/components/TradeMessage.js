@@ -2,7 +2,7 @@ global.Vue.component('TradeMessage', {
     template: `
 <div :class="['trade-message', copyState]">
     <div class="trade-message-name">{{ message.name }}:</div>
-    <div class="trade-message-body">{{ message.body }}</div>
+    <div class="trade-message-body" v-html="messageBodyWithClickableReceiptLink"></div>
     <a href="#" class="trade-message-copy" @click.prevent="copy" title="Copy to clipboard">
         <span class="copy-icon copy-available">📋</span>
         <span v-if="copyState === 'copied'" class="copy-icon copied">✔️</span>
@@ -14,6 +14,13 @@ global.Vue.component('TradeMessage', {
         return {
             copyState: 'copy-button-enabled',
         };
+    },
+    mixins: [vueMixins.escape],
+    computed: {
+        messageBodyWithClickableReceiptLink() {
+            const messageBody = this.escape(this.message.body);
+            return messageBody.replace(/(https?:\/\/arsonwarehouse.(loc|com)\/trades\/[0-9a-f]+)/, '<a href="$1" target="_blank" rel="noopener noreferrer" class="receipt-link">$1</a>');
+        },
     },
     methods: {
         async copy(event) {

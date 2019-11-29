@@ -7,6 +7,7 @@ global.Vue.component('TradeComponent', {
     <td class="trade-component-total-price">{{ totalPriceForDisplay }}</td>
 </tr>`,
     props: ['component'],
+    mixins: [vueMixins.formatCurrency],
     computed: {
         unitPriceForDisplay() {
             return this.formatCurrency(this.component.unit_price);
@@ -15,9 +16,4 @@ global.Vue.component('TradeComponent', {
             return this.formatCurrency(this.component.total_price);
         }
     },
-    methods: {
-        formatCurrency(value) {
-            return '$' + value.toLocaleString('en-US');
-        }
-    }
 });
