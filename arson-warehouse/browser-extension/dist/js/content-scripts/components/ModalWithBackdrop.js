@@ -1,6 +1,6 @@
 global.Vue.component('ModalWithBackdrop', {
     template: `
-<div :class="['awh-modal-with-backdrop', {'behind-chats': behindChats}]">
+<div class="awh-modal-with-backdrop">
     <div :class="'awh-modal ' + modalClass">
         <div class="awh-modal-content">
             <div class="awh-modal-header">
@@ -16,19 +16,6 @@ global.Vue.component('ModalWithBackdrop', {
         </div>
     </div>
     <div class="awh-modal-backdrop" @click="$emit('backdrop-pressed')"></div>
-    <a v-if="! behindChats" href="#" class="awh-bring-chats-to-front-button" @click.prevent="behindChats = true" title="Bring chats to front">🔃</a>
 </div>`,
-    props: ['modalClass', 'title', 'forceBehindChats'],
-    data() {
-        return {
-            behindChats: this.forceBehindChats,
-        };
-    },
-    watch: {
-        forceBehindChats() {
-            if (this.forceBehindChats) {
-                this.behindChats = true;
-            }
-        }
-    }
+    props: ['modalClass', 'title'],
 });

@@ -2,20 +2,13 @@ html.awh-modal-is-open {
   overflow: hidden;
 }
 
-.awh-modal-with-backdrop.behind-chats .awh-modal-backdrop {
-  z-index: 100000;
-}
-.awh-modal-with-backdrop.behind-chats .awh-modal {
-  z-index: 100001;
-}
-
 .awh-modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  z-index: 1000000;
+  z-index: 100000;
   background-color: black;
   opacity: 0.65;
 }
@@ -28,7 +21,7 @@ html.awh-modal-is-open {
   left: 0;
   bottom: 0;
   right: 0;
-  z-index: 1000001;
+  z-index: 100001;
   margin: 1rem 0 2.25rem 0;
   padding: 0.5rem;
   pointer-events: none;
@@ -88,24 +81,6 @@ html.awh-modal-is-open {
 .awh-modal .awh-modal-footer {
   border-top: 1px solid #e9ecef;
   padding: 1rem;
-}
-
-.awh-bring-chats-to-front-button {
-  display: block;
-  position: fixed;
-  bottom: 0;
-  right: 0.5rem;
-  width: 2.75rem;
-  height: 2.5rem;
-  background-color: #fffd;
-  border-top-left-radius: 0.3rem;
-  border-top-right-radius: 0.3rem;
-  z-index: 1000001;
-  font-size: 1.4rem;
-  text-align: center;
-  line-height: 3rem;
-  border-bottom: 3px solid #b53471;
-  text-decoration: none;
 }
 
 .awh-trade-value-modal .loading-trade-value {
