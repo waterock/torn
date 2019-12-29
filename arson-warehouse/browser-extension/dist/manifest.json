@@ -20,6 +20,16 @@
       "run_at": "document_end"
     },
     {
+      "matches": ["https://www.torn.com/bazaar.php*"],
+      "js": [
+        "js/content-scripts/functions/truthy.js",
+        "js/content-scripts/bazaar/ArmouryStatsPopover.js",
+        "js/content-scripts/bazaar/ViewButtonHover.js",
+        "js/content-scripts/bazaar/bazaar.js"
+      ],
+      "run_at": "document_end"
+    },
+    {
       "matches": ["https://www.torn.com/trade.php*"],
       "css": ["awh.css"],
       "js": [

@@ -21,11 +21,36 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
     }
 });
 
-chrome.runtime.onMessage.addListener((message) => {
+chrome.runtime.onMessage.addListener(async (message, {tab}) => {
     if (message.action === 'received-equipment-report') {
         sendEquipmentReportToArsonWarehouse(message.payload);
     }
+    if (message.action === 'get-armoury-stats') {
+        const armouryStats = await getArmouryStats(message.payload.armouryId);
+        chrome.tabs.sendMessage(tab.id, {
+            action: 'did-get-armoury-stats',
+            payload: armouryStats,
+        });
+    }
 });
+
+function getArmouryStats(armouryId) {
+    return fetchArmouryStats(armouryId);
+    // return new Promise(resolve => {
+    //     setTimeout(() => {
+    //         resolve({
+    //             armouryId: armouryId,
+    //             damage: 100
+    //         });
+    //     }, 1000);
+    // });
+}
+
+function fetchArmouryStats(armouryId) {
+    return fetch(getBaseUrl() + '/api/v1/armouries/' + armouryId).then((response) => {
+        return response.json();
+    });
+}
 
 function sendEquipmentReportToArsonWarehouse(report) {
     return fetch(getBaseUrl() + '/api/v1/equipment-reports', {
