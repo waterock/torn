@@ -8,7 +8,7 @@
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-const arsonBaseApiUrl = 'http://arsonwarehouse.loc/api/v1';
+const arsonBaseApiUrl = 'https://arsonwarehouse.com/api/v1';
 const racingSkillCacheByDriverId = new Map();
 
 (async function () {
