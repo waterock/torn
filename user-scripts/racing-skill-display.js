@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Racing Skill Display
 // @namespace    https://github.com/sulsay/torn
-// @version      1.0
+// @version      1.0.1
 // @description  Shows the racing skill of drivers in your race as long as they have this script installed as well
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/loader.php?sid=racing*
@@ -27,8 +27,7 @@ async function insertRacingSkillsIntoCurrentDriversList() {
         return;
     }
 
-    // The content of #leaderBoard is rebuilt periodically so watch for changes:
-    new MutationObserver(insertRacingSkillsIntoCurrentDriversList).observe(driversList, {childList: true});
+    watchForDriversListContentChanges(driversList);
 
     const racingSkills = await getRacingSkillForDrivers(getDriverIds(driversList));
     for (let driver of driversList.querySelectorAll('.driver-item')) {
@@ -40,6 +39,16 @@ async function insertRacingSkillsIntoCurrentDriversList() {
         nameDiv.style.position = 'relative';
         nameDiv.insertAdjacentHTML('beforeend', `<span style="position:absolute;right:5px">${racingSkills[driverId]}</span>`);
     }
+}
+
+function watchForDriversListContentChanges(driversList) {
+    if (driversList.dataset.hasWatcher !== undefined) {
+        return;
+    }
+
+    // The content of #leaderBoard is rebuilt periodically so watch for changes:
+    new MutationObserver(insertRacingSkillsIntoCurrentDriversList).observe(driversList, {childList: true});
+    driversList.dataset.hasWatcher = 'true';
 }
 
 function getDriverIds(driversList) {
