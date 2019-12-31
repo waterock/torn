@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Racing Skill Display
 // @namespace    https://github.com/sulsay/torn
-// @version      1.0.1
+// @version      1.0.2
 // @description  Shows the racing skill of drivers in your race as long as they have this script installed as well
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/loader.php?sid=racing*
@@ -32,7 +32,7 @@ async function insertRacingSkillsIntoCurrentDriversList() {
     const racingSkills = await getRacingSkillForDrivers(getDriverIds(driversList));
     for (let driver of driversList.querySelectorAll('.driver-item')) {
         const driverId = getDriverId(driver);
-        if (typeof racingSkills[driverId] !== 'number') {
+        if (! racingSkills[driverId]) {
             continue;
         }
         const nameDiv = driver.querySelector('.name');
@@ -88,7 +88,7 @@ function fetchRacingSkillForDrivers(driverIds) {
     return new Promise(resolve => {
         GM_xmlhttpRequest({
             method: 'GET',
-            url: `${arsonBaseApiUrl}/racing-skills?drivers=${driverIds.join(',')}`,
+            url: `${arsonBaseApiUrl}/racing-skills?expect_strings&drivers=${driverIds.join(',')}`,
             onload: ({responseText}) => resolve(JSON.parse(responseText)),
         });
     });
