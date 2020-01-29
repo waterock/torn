@@ -3,7 +3,7 @@ chrome.management.getSelf((extensionInfo) => {
     window.dev = extensionInfo.installType === 'development';
 });
 
-window.userAgentIsYandex = navigator.userAgent.indexOf('YaBrowser') > -1;
+window.userAgentNeedsListener =  navigator.userAgent.indexOf('Mobile Safari') > -1;
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
     if (tab.url.indexOf('trade.php') === -1) {
@@ -38,8 +38,8 @@ function sendEquipmentReportToArsonWarehouse(report) {
 }
 
 function getTradeDataFromPage(tab) {
-    if (window.userAgentIsYandex) {
-        return getTradeDataForYandex(tab);
+    if (window.userAgentNeedsListener) {
+        return getTradeDataWithListener(tab);
     }
 
     return new Promise((resolve) => {
@@ -47,10 +47,10 @@ function getTradeDataFromPage(tab) {
     });
 }
 
-function getTradeDataForYandex(tab) {
+function getTradeDataWithListener(tab) {
     return new Promise((resolve) => {
         const oneTimeResponseHandler = (message) => {
-            if (message.action === 'did-get-trade-data-for-yandex') {
+            if (message.action === 'did-get-trade-data-with-listener') {
                 resolve(message.payload);
             }
             chrome.runtime.onMessage.removeListener(oneTimeResponseHandler);

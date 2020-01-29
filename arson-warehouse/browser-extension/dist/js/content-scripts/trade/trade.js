@@ -64,7 +64,7 @@ async function getTradeData() {
     };
 
     chrome.runtime.sendMessage({
-        action: 'did-get-trade-data-for-yandex',
+        action: 'did-get-trade-data-with-listener',
         payload: tradeData,
     });
 
