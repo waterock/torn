@@ -3,7 +3,11 @@ chrome.management.getSelf((extensionInfo) => {
     window.dev = extensionInfo.installType === 'development';
 });
 
-window.userAgentNeedsListener =  navigator.userAgent.indexOf('Mobile Safari') > -1;
+window.userAgentNeedsListener = isUserAgent("YaBrowser") || isUserAgent("Mobile Safari");
+
+function isUserAgent(search) {
+    return navigator.userAgent.indexOf(search) > -1;
+}
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
     if (tab.url.indexOf('trade.php') === -1) {
