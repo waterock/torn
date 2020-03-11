@@ -3,11 +3,7 @@ chrome.management.getSelf((extensionInfo) => {
     window.dev = extensionInfo.installType === 'development';
 });
 
-window.userAgentNeedsListener = isUserAgent("YaBrowser") || isUserAgent("Mobile Safari");
-
-function isUserAgent(search) {
-    return navigator.userAgent.indexOf(search) > -1;
-}
+window.userAgentNeedsListener = userAgentContains('YaBrowser') || userAgentContains('Mobile Safari');
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
     if (tab.url.indexOf('trade.php') === -1) {
@@ -113,6 +109,10 @@ function getRequestBody(tradeId, tradeData) {
     }
 
     return requestBody;
+}
+
+function userAgentContains(search) {
+    return navigator.userAgent.indexOf(search) > -1;
 }
 
 function showAlertInTab(tab, message) {
