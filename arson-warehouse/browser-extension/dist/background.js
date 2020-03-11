@@ -3,7 +3,9 @@ chrome.management.getSelf((extensionInfo) => {
     window.dev = extensionInfo.installType === 'development';
 });
 
-window.userAgentIsYandex = navigator.userAgent.indexOf('YaBrowser') > -1;
+window.userAgentNeedsListener =
+    userAgentContains('YaBrowser') // For Yandex (both Android and desktop)
+    || userAgentContains('Mobile Safari'); // For Android Kiwi
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
     if (tab.url.indexOf('trade.php') === -1) {
@@ -38,8 +40,8 @@ function sendEquipmentReportToArsonWarehouse(report) {
 }
 
 function getTradeDataFromPage(tab) {
-    if (window.userAgentIsYandex) {
-        return getTradeDataForYandex(tab);
+    if (window.userAgentNeedsListener) {
+        return getTradeDataWithListener(tab);
     }
 
     return new Promise((resolve) => {
@@ -47,10 +49,10 @@ function getTradeDataFromPage(tab) {
     });
 }
 
-function getTradeDataForYandex(tab) {
+function getTradeDataWithListener(tab) {
     return new Promise((resolve) => {
         const oneTimeResponseHandler = (message) => {
-            if (message.action === 'did-get-trade-data-for-yandex') {
+            if (message.action === 'did-get-trade-data') {
                 resolve(message.payload);
             }
             chrome.runtime.onMessage.removeListener(oneTimeResponseHandler);
@@ -109,6 +111,10 @@ function getRequestBody(tradeId, tradeData) {
     }
 
     return requestBody;
+}
+
+function userAgentContains(search) {
+    return navigator.userAgent.indexOf(search) > -1;
 }
 
 function showAlertInTab(tab, message) {
