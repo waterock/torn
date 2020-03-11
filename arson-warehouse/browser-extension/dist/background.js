@@ -3,7 +3,9 @@ chrome.management.getSelf((extensionInfo) => {
     window.dev = extensionInfo.installType === 'development';
 });
 
-window.userAgentNeedsListener = userAgentContains('YaBrowser') || userAgentContains('Mobile Safari');
+window.userAgentNeedsListener =
+    userAgentContains('YaBrowser') // For Yandex (both Android and desktop)
+    || userAgentContains('Mobile Safari'); // For Android Kiwi
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
     if (tab.url.indexOf('trade.php') === -1) {
