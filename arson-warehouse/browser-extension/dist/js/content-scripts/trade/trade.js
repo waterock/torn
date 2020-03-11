@@ -64,7 +64,7 @@ async function getTradeData() {
     };
 
     chrome.runtime.sendMessage({
-        action: 'did-get-trade-data-with-listener',
+        action: 'did-get-trade-data',
         payload: tradeData,
     });
 

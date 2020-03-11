@@ -50,7 +50,7 @@ function getTradeDataFromPage(tab) {
 function getTradeDataWithListener(tab) {
     return new Promise((resolve) => {
         const oneTimeResponseHandler = (message) => {
-            if (message.action === 'did-get-trade-data-with-listener') {
+            if (message.action === 'did-get-trade-data') {
                 resolve(message.payload);
             }
             chrome.runtime.onMessage.removeListener(oneTimeResponseHandler);
