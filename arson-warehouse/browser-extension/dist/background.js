@@ -3,6 +3,17 @@ chrome.management.getSelf((extensionInfo) => {
     window.dev = extensionInfo.installType === 'development';
 });
 
+window.messageHandlers = new Map();
+
+chrome.runtime.onMessage.addListener((message) => {
+    // This is a generic listener for messages from content-scripts. Use the Set window.messageHandlers to add handlers.
+    for (let [action, handler] of window.messageHandlers.entries()) {
+        if (message.action === action) {
+            handler(message);
+        }
+    }
+});
+
 chrome.browserAction.onClicked.addListener(async (tab) => {
     if (tab.url.indexOf('trade.php') === -1) {
         showAlertInTab(tab, 'ArsonWarehouse shows you the total value for a trade.\n\nView a trade and then press this button.');
@@ -19,21 +30,11 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
     }
 });
 
-chrome.runtime.onMessage.addListener((message) => {
-    if (message.action === 'received-equipment-report') {
-        sendEquipmentReportToArsonWarehouse(message.payload);
-    }
-});
+window.messageHandlers.set('received-equipment-report', (message) => sendEquipmentReportToArsonWarehouse(message.payload));
 
 function getTradeDataFromPage(tab) {
     return new Promise((resolve) => {
-        const didGetTradeDataHandler = (message) => {
-            if (message.action === 'did-get-trade-data') {
-                resolve(message.payload);
-                chrome.runtime.onMessage.removeListener(didGetTradeDataHandler);
-            }
-        };
-        chrome.runtime.onMessage.addListener(didGetTradeDataHandler);
+        window.messageHandlers.set('did-get-trade-data', (message) => resolve(message.payload));
         chrome.tabs.sendMessage(tab.id, {action: 'get-trade-data'});
     });
 }
