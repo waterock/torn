@@ -46,21 +46,25 @@ async function fetchTradeValue(tradeId, tradeData) {
         throw errorWithFriendlyMessage('Both sides contain items - this is not supported.');
     }
 
-    const response = await fetch(getBaseUrl() + '/api/v1/trades', {
-        method: 'post',
-        body: JSON.stringify(getTradeRequestBody(tradeId, tradeData)),
-    });
+    try {
+        const response = await fetch(getBaseUrl() + '/api/v1/trades', {
+            method: 'post',
+            body: JSON.stringify(getTradeRequestBody(tradeId, tradeData)),
+        });
 
-    if (response.status === 400) {
-        const responseJson = await response.json();
-        if (typeof responseJson.reason === 'string' && responseJson.reason.length > 0) {
-            throw errorWithFriendlyMessage(responseJson.reason);
+        if (response.status === 400) {
+            const responseJson = await response.json();
+            if (typeof responseJson.reason === 'string' && responseJson.reason.length > 0) {
+                throw errorWithFriendlyMessage(responseJson.reason);
+            }
+        } else if (response.status !== 200) {
+            throw errorWithFriendlyMessage('Something went wrong on the ArsonWarehouse server (or the service is temporarily down).');
         }
-    } else if (response.status !== 200) {
-        throw errorWithFriendlyMessage('Something went wrong on the ArsonWarehouse server (or the service is temporarily down).');
-    }
 
-    return response.json();
+        return response.json();
+    } catch (error) {
+        throw errorWithFriendlyMessage(error.message + ' - Please make sure the plugin has permission to access arsonwarehouse.com.');
+    }
 }
 
 function getTradeRequestBody(tradeId, tradeData) {
