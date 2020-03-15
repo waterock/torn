@@ -16,6 +16,9 @@ global.tradeValueModalVueInstance = null;
 
 chrome.runtime.onMessage.addListener((message) => {
     switch (message.action) {
+        case 'check-is-modal-already-open':
+            onCheckIsModalAlreadyOpen();
+            break;
         case 'get-trade-data':
             onGetTradeData();
             break;
@@ -26,6 +29,13 @@ chrome.runtime.onMessage.addListener((message) => {
             break;
     }
 });
+
+function onCheckIsModalAlreadyOpen() {
+    chrome.runtime.sendMessage({
+        action: 'did-check-is-modal-already-open',
+        payload: document.documentElement.classList.contains('awh-modal-is-open'),
+    });
+}
 
 function onGetTradeData() {
     global.tradeValueModalVueInstance = createTradeModalVueInstance();

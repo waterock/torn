@@ -20,6 +20,10 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
         return;
     }
 
+    if (await isModalAlreadyOpen(tab)) {
+        return;
+    }
+
     try {
         const tradeId = parseInt(tab.url.match(/ID=(\d+)/)[1], 10);
         const tradeDataFromPage = await getTradeDataFromPage(tab);
@@ -31,6 +35,13 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
 });
 
 window.messageHandlers.set('received-equipment-report', (message) => sendEquipmentReportToArsonWarehouse(message.payload));
+
+function isModalAlreadyOpen(tab) {
+    return new Promise((resolve) => {
+        window.messageHandlers.set('did-check-is-modal-already-open', (message) => resolve(message.payload));
+        chrome.tabs.sendMessage(tab.id, {action: 'check-is-modal-already-open'});
+    });
+}
 
 function getTradeDataFromPage(tab) {
     return new Promise((resolve) => {
