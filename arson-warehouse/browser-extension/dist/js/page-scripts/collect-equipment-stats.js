@@ -5,7 +5,7 @@
         const stats = {};
         for (let extra of equipmentDetails.extras) {
             const stat = extra.title.toLowerCase();
-            if (['damage', 'accuracy', 'armor'].includes(stat)) {
+            if (['damage', 'accuracy', 'armor', 'quality'].includes(stat)) {
                 stats[stat] = extra.value;
             }
         }

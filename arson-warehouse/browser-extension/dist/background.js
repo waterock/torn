@@ -3,9 +3,16 @@ chrome.management.getSelf((extensionInfo) => {
     window.dev = extensionInfo.installType === 'development';
 });
 
-window.userAgentNeedsListener =
-    userAgentContains('YaBrowser') // For Yandex (both Android and desktop)
-    || userAgentContains('Mobile Safari'); // For Android Kiwi
+window.messageHandlers = new Map();
+
+chrome.runtime.onMessage.addListener((message) => {
+    // This is a generic listener for messages from content-scripts. Use the Set window.messageHandlers to add handlers.
+    for (let [action, handler] of window.messageHandlers.entries()) {
+        if (message.action === action) {
+            handler(message);
+        }
+    }
+});
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
     if (tab.url.indexOf('trade.php') === -1) {
@@ -13,8 +20,12 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
         return;
     }
 
+    if (await isModalAlreadyOpen(tab)) {
+        return;
+    }
+
     try {
-        const tradeId = +tab.url.match(/ID=(\d+)/)[1];
+        const tradeId = parseInt(tab.url.match(/ID=(\d+)/)[1], 10);
         const tradeDataFromPage = await getTradeDataFromPage(tab);
         const tradeValueResponse = await fetchTradeValue(tradeId, tradeDataFromPage);
         emitTradeValueResponse(tab, tradeValueResponse);
@@ -23,77 +34,52 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
     }
 });
 
-chrome.runtime.onMessage.addListener((message) => {
-    if (message.action === 'received-equipment-report') {
-        sendEquipmentReportToArsonWarehouse(message.payload);
-    }
-});
+window.messageHandlers.set('received-equipment-report', (message) => sendEquipmentReportToArsonWarehouse(message.payload));
 
-function sendEquipmentReportToArsonWarehouse(report) {
-    return fetch(getBaseUrl() + '/api/v1/equipment-reports', {
-        headers: new Headers({
-            Authorization: 'Basic ' + btoa(`${report.reporterId}:`),
-        }),
-        method: 'post',
-        body: JSON.stringify(report.equipment),
+function isModalAlreadyOpen(tab) {
+    return new Promise((resolve) => {
+        window.messageHandlers.set('did-check-is-modal-already-open', (message) => resolve(message.payload));
+        chrome.tabs.sendMessage(tab.id, {action: 'check-is-modal-already-open'});
     });
 }
 
 function getTradeDataFromPage(tab) {
-    if (window.userAgentNeedsListener) {
-        return getTradeDataWithListener(tab);
-    }
-
     return new Promise((resolve) => {
-        chrome.tabs.sendMessage(tab.id, {action: 'get-trade-data'}, resolve);
-    });
-}
-
-function getTradeDataWithListener(tab) {
-    return new Promise((resolve) => {
-        const oneTimeResponseHandler = (message) => {
-            if (message.action === 'did-get-trade-data') {
-                resolve(message.payload);
-            }
-            chrome.runtime.onMessage.removeListener(oneTimeResponseHandler);
-        };
-        chrome.runtime.onMessage.addListener(oneTimeResponseHandler);
+        window.messageHandlers.set('did-get-trade-data', (message) => resolve(message.payload));
         chrome.tabs.sendMessage(tab.id, {action: 'get-trade-data'});
     });
 }
 
-function fetchTradeValue(tradeId, tradeData) {
+async function fetchTradeValue(tradeId, tradeData) {
     if (tradeData.currentUserItems.length + tradeData.otherUserItems.length === 0) {
-        throw createErrorWithFriendlyMessage('Neither side contains items.');
+        throw errorWithFriendlyMessage('Neither side contains items.');
     }
     if (tradeData.currentUserItems.length > 0 && tradeData.otherUserItems.length > 0) {
-        throw createErrorWithFriendlyMessage('Both sides contain items - this is not supported.');
+        throw errorWithFriendlyMessage('Both sides contain items - this is not supported.');
     }
 
-    const requestBody = getRequestBody(tradeId, tradeData);
+    try {
+        const response = await fetch(getBaseUrl() + '/api/v1/trades', {
+            method: 'post',
+            body: JSON.stringify(getTradeRequestBody(tradeId, tradeData)),
+        });
 
-    return fetch(getBaseUrl() + '/api/v1/trades', {method: 'post', body: JSON.stringify(requestBody)}).then(async (response) => {
-        if (response.status === 200) {
-            return response.json()
-        }
         if (response.status === 400) {
             const responseJson = await response.json();
             if (typeof responseJson.reason === 'string' && responseJson.reason.length > 0) {
-                throw createErrorWithFriendlyMessage(responseJson.reason);
+                throw errorWithFriendlyMessage(responseJson.reason);
             }
+        } else if (response.status !== 200) {
+            throw errorWithFriendlyMessage('Something went wrong on the ArsonWarehouse server (or the service is temporarily down).');
         }
-        throw createErrorWithFriendlyMessage('Something went wrong on the ArsonWarehouse server (or the service is temporarily down).');
-    });
+
+        return response.json();
+    } catch (error) {
+        throw errorWithFriendlyMessage(error.message + ' - Please make sure the plugin has permission to access arsonwarehouse.com.');
+    }
 }
 
-function emitTradeValueResponse(tab, tradeValueResponse) {
-    chrome.tabs.sendMessage(tab.id, {
-        action: 'did-get-trade-value-response',
-        payload: tradeValueResponse,
-    });
-}
-
-function getRequestBody(tradeId, tradeData) {
+function getTradeRequestBody(tradeId, tradeData) {
     const requestBody = {
         trade_id: tradeId,
         plugin_version: chrome.runtime.getManifest().version,
@@ -113,8 +99,21 @@ function getRequestBody(tradeId, tradeData) {
     return requestBody;
 }
 
-function userAgentContains(search) {
-    return navigator.userAgent.indexOf(search) > -1;
+function emitTradeValueResponse(tab, tradeValueResponse) {
+    chrome.tabs.sendMessage(tab.id, {
+        action: 'did-get-trade-value-response',
+        payload: tradeValueResponse,
+    });
+}
+
+function sendEquipmentReportToArsonWarehouse(report) {
+    return fetch(getBaseUrl() + '/api/v1/equipment-reports', {
+        headers: new Headers({
+            Authorization: 'Basic ' + btoa(`${report.reporterId}:`),
+        }),
+        method: 'post',
+        body: JSON.stringify(report.equipment),
+    });
 }
 
 function showAlertInTab(tab, message) {
@@ -123,7 +122,7 @@ function showAlertInTab(tab, message) {
     });
 }
 
-function createErrorWithFriendlyMessage(message) {
+function errorWithFriendlyMessage(message) {
     const error = new Error(message);
     error.hasFriendlyMessage = true;
     return error;
