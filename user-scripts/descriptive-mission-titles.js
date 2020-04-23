@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Descriptive Mission Titles
 // @namespace    https://github.com/sulsay/torn
-// @version      1.4
+// @version      1.5
 // @description  Renames (Duke) missions to reflect their main objective
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/loader.php?sid=missions
@@ -73,7 +73,7 @@ const missionTitles = new Map([
     ['Loud and Clear', 'Use 5,11 explosive grenades'],
     ['Loyal Customer', 'Defeat {name}'],
     ['Make it Slow', 'Defeat {name} in no fewer than 13 turns in a single attack'],
-    ['Marriage Counselling', 'Defeat the spouse of {name}'],
+    ['Marriage Counseling', 'Defeat the spouse of {name}'],
     ['Massacrist', 'Defeat {name}'],
     ['Meeting the Challenge', 'Mug people for a listed total amount.'],
     ['Motivator', 'Lose or stalemate to {name}'],
@@ -111,9 +111,9 @@ const missionTitles = new Map([
 ]);
 const originalMissionNames = Array.from(missionTitles.keys());
 
-(async function () {
+(async function() {
     const missionsContainer = document.getElementById('missionsMainContainer');
-    new MutationObserver(() => missionsContainerUpdated()).observe(missionsContainer, {childList: true});
+    new MutationObserver(() => missionsContainerUpdated()).observe(missionsContainer, { childList: true });
     missionsContainerUpdated();
 })();
 
@@ -132,7 +132,8 @@ function missionsContainerUpdated() {
 
 function getMissionTargetNames(missionDetailsPane) {
     const profileLinks = missionDetailsPane.querySelectorAll('a[href^="profiles.php?XID="]');
-    return Array.from(profileLinks).map(profileLink => profileLink.innerText.trim());
+    const profileLinkArray = Array.from(profileLinks).map(profileLink => profileLink.innerText.trim());
+    return [...new Set(profileLinkArray)];
 }
 
 function renameMissionListItem(missionListItem, targetNames) {
@@ -163,9 +164,6 @@ function replaceMissionTitle(context, originalTitleNode, targetNames) {
     }
 
     let replacementTitle = missionTitles.get(originalTitleNode.textContent.trim());
-    for (let targetName of targetNames) {
-       replacementTitle = replacementTitle.replace('{name}', targetName);
-    }
-
+    replacementTitle = replacementTitle.replace('{name}', targetNames.join(', '));
     context.replaceChild(document.createTextNode(replacementTitle), originalTitleNode);
 }
