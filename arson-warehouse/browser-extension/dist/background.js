@@ -35,6 +35,7 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
 });
 
 window.messageHandlers.set('received-equipment-report', (message) => sendEquipmentReportToArsonWarehouse(message.payload));
+window.messageHandlers.set('obtained-foreign-stock', (message) => sendForeignStockReportToArsonWarehouse(message.payload));
 
 function isModalAlreadyOpen(tab) {
     return new Promise((resolve) => {
@@ -113,6 +114,13 @@ function sendEquipmentReportToArsonWarehouse(report) {
         }),
         method: 'post',
         body: JSON.stringify(report.equipment),
+    });
+}
+
+function sendForeignStockReportToArsonWarehouse(report) {
+    return fetch(getBaseUrl() + '/api/v1/foreign-stock-reports', {
+        method: 'post',
+        body: JSON.stringify(report),
     });
 }
 
