@@ -119,6 +119,9 @@ function sendEquipmentReportToArsonWarehouse(report) {
 
 function sendForeignStockReportToArsonWarehouse(report) {
     return fetch(getBaseUrl() + '/api/v1/foreign-stock-reports', {
+        headers: new Headers({
+            Authorization: 'Basic ' + btoa(`${report.reporterId}:`),
+        }),
         method: 'post',
         body: JSON.stringify(report),
     });

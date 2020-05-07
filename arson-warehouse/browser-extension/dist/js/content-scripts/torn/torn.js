@@ -16,16 +16,18 @@ scriptTag.addEventListener('arson-warehouse-event-from-page', (event) => {
 
 const travelAgencyMarket = document.querySelector('.travel-agency-market');
 if (travelAgencyMarket) {
-    const country = document.querySelector('h4').innerText.trim();
+    const country = document.querySelector('h4').textContent.trim();
     const itemStocks = [];
 
     for (let itemListItem of Array.from(travelAgencyMarket.querySelectorAll('li'))) {
         const image = itemListItem.querySelector('img[src^="/images/items/"]');
         const itemId = parseInt(image.getAttribute('src').replace('/images/items/', ''), 10);
-        const stock = parseInt(itemListItem.querySelector('.stck-amount').innerText.trim().replace(/,/g, ''), 10);
+        const price = parseInt(itemListItem.querySelector('.c-price').textContent.trim().replace(/[,$]/g, ''), 10);
+        const stock = parseInt(itemListItem.querySelector('.stck-amount').textContent.trim().replace(/,/g, ''), 10);
 
         itemStocks.push({
             item_id: itemId,
+            price,
             stock,
         });
     }
@@ -33,6 +35,7 @@ if (travelAgencyMarket) {
     chrome.runtime.sendMessage({
         action: 'obtained-foreign-stock',
         payload: {
+            reporterId: parseInt(document.cookie.match(/uid=(\d+?);/)[1], 10),
             country,
             items: itemStocks,
         },
