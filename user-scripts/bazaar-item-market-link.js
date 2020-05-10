@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Bazaar Item Market Link
 // @namespace    https://github.com/sulsay/torn
-// @version      1.2
+// @version      2.0
 // @description  Adds link "View in item market" on expanded items in bazaar
 // @author       Sulsay [2173590]
 // @match        https://www.torn.com/bazaar.php*
@@ -9,61 +9,40 @@
 // ==/UserScript==
 
 (async function () {
-    const itemsList = await truthy(() => document.querySelector('.bazaar-main-wrap .items-list'));
-
-    const mutationObserverOptions = {childList: true, subtree: isSmallScreenDevice()};
-    new MutationObserver(insertMarketLinkOnItemPaneOpened.bind(null, itemsList)).observe(itemsList, mutationObserverOptions);
+    const itemsContainer = await truthy(() => document.querySelector('div[class*=itemsContainner]')); // The double n is a typo on TORN's side
+    new MutationObserver(insertMarketLinkOnItemPaneOpened.bind(null, itemsContainer)).observe(itemsContainer, {childList: true, subtree: true});
 })();
 
 function insertMarketLinkOnItemPaneOpened(itemsList, mutations) {
-    const itemPane = getNewlyOpenedItemPane(mutations);
-    if (itemPane === null) {
-        return;
+    for (let mutation of mutations) {
+        for (let addedNode of mutation.addedNodes) {
+            if (addedNode.classList.contains('items-list-wrap')) {
+                insertMarketLink(addedNode);
+                return;
+            }
+
+            // Was item already viewed at least once? Then the addedNode in the mutation is the react wrapper around `div.items-list-wrap`. The firstChild is the item pane we're looking for.
+            if (addedNode.firstChild && addedNode.firstChild.nodeType === Node.ELEMENT_NODE && addedNode.firstChild.classList.contains('items-list-wrap')) {
+                insertMarketLink(addedNode.firstChild);
+                return;
+            }
+        }
     }
-    insertMarketLink(itemPane);
 }
 
-async function insertMarketLink(itemPane) {
-    const itemId = getActiveItem(itemPane).querySelector('[itemid]').getAttribute('itemid');
-    const itemInfoSpan = await truthy(() => itemPane.querySelector('.item-cont .item-wrap .info-msg'));
-    const shortDescriptionDiv = itemInfoSpan.firstElementChild;
-
+function insertMarketLink(itemPane) {
+    const itemId = parseInt(itemPane.querySelector('[aria-labelledby^="armory-info-"]').getAttribute('aria-labelledby').replace('armory-info-', ''), 10);
     const marketLinkHtml = `<a href="/imarket.php#/p=shop&type=${itemId}" style="${getItemMarketLinkStyles().join(';')}">View in item market</a>`;
-    shortDescriptionDiv.insertAdjacentHTML('beforeend', marketLinkHtml);
-}
 
-function getNewlyOpenedItemPane(mutations) {
-    if (isSmallScreenDevice()) {
-        const infoPaneAddition = mutations.find(({target}) => target.matches('div.view-item-info') && document.contains(target));
-        return infoPaneAddition ? infoPaneAddition.target : null;
-    }
-    const infoPaneAddition = mutations.find(({addedNodes}) => addedNodes.length === 1 && addedNodes[0].classList.contains('show-item-info'));
-    return infoPaneAddition ? infoPaneAddition.addedNodes[0] : null;
-}
-
-function getActiveItem(infoPane) {
-    return getPossibleActiveItems(infoPane).find(li => li.classList.contains('act'));
-}
-
-function getPossibleActiveItems(infoPane) {
-    if (isSmallScreenDevice()) {
-        return [infoPane.closest('li')];
-    }
-    const firstPrevious = infoPane.previousElementSibling, secondPrevious = firstPrevious.previousElementSibling, thirdPrevious = secondPrevious.previousElementSibling;
-    return [firstPrevious, secondPrevious, thirdPrevious];
+    const itemNameAndTypeDiv = itemPane.querySelector('.m-bottom10');
+    itemNameAndTypeDiv.insertAdjacentHTML('beforeend', marketLinkHtml);
 }
 
 function getItemMarketLinkStyles() {
     return [
         'color: #B53471',
         'text-decoration: none',
-        'padding-left: 1rem',
-        'background: url(\'https://arsonwarehouse.com/images/awh-icon-48.png\') .125rem/.75rem no-repeat',
     ];
-}
-
-function isSmallScreenDevice() {
-    return window.isMobileMedia() || window.isTabletMedia();
 }
 
 function truthy(handler) {
