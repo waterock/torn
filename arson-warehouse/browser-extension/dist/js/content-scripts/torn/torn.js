@@ -35,7 +35,8 @@ if (travelAgencyMarket) {
     chrome.runtime.sendMessage({
         action: 'obtained-foreign-stock',
         payload: {
-            reporterId: parseInt(document.cookie.match(/uid=(\d+?);/)[1], 10),
+            plugin_version: chrome.runtime.getManifest().version,
+            reporter_id: parseInt(document.cookie.match(/uid=(\d+?);/)[1], 10),
             country,
             items: itemStocks,
         },
