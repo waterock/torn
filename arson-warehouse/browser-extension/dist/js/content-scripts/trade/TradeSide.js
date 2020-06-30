@@ -4,7 +4,7 @@ class TradeSide {
         this._items = null;
     }
     getUserName() {
-        return this._$root.querySelector('.title-black').innerText.trim();
+        return this._$root.querySelector('.title-black').firstChild.textContent.trim();
     }
     getItems() {
         if (this._items === null) {

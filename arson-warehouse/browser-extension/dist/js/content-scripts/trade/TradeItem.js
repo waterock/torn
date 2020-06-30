@@ -32,7 +32,7 @@ class TradeItem {
         }
     }
     _splitNameFromQuantity() {
-        const nameWithOptionalQuantity = this._$root.querySelector('.name').innerText.trim();
+        const nameWithOptionalQuantity = this._$root.querySelector('.name').firstChild.textContent.trim();
 
         const lastXPosition = nameWithOptionalQuantity.lastIndexOf('x');
         if (lastXPosition === -1) {
