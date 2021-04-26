@@ -33,19 +33,32 @@ class TradeItem {
     }
     _splitNameFromQuantity() {
         const nameWithOptionalQuantity = this._$root.querySelector('.name').firstChild.textContent.trim();
+        const quantityPositionInText = this._getQuantityPositionInText(nameWithOptionalQuantity);
 
-        const lastXPosition = nameWithOptionalQuantity.lastIndexOf('x');
-        if (lastXPosition === -1) {
-            return {name: nameWithOptionalQuantity, quantity: 1};
+        if (!quantityPositionInText) {
+            return { name: nameWithOptionalQuantity, quantity: 1 };
         }
 
-        const quantityString = nameWithOptionalQuantity.substr(lastXPosition + 1);
-        const quantity = parseInt(quantityString, 10);
+        const splitParts = nameWithOptionalQuantity.split(' ');
+        const quantityPartIndex = { start: 0, end: splitParts.length - 1 }[quantityPositionInText];
+        const quantityAsString = splitParts[quantityPartIndex].substr(1);
+        const quantity = parseInt(quantityAsString, 10);
 
-        if (isNaN(quantity) || quantity.toString().length !== quantityString.length) {
-            return {name: nameWithOptionalQuantity, quantity: 1};
+        if (isNaN(quantity) || quantity.toString().length !== quantityAsString.length) {
+            return { name: nameWithOptionalQuantity, quantity: 1 };
         }
 
-        return {name: nameWithOptionalQuantity.substr(0, lastXPosition - 1), quantity};
+        return {
+            name: splitParts.filter((_, i) => i !== quantityPartIndex).join(' ').trim(),
+            quantity,
+        };
+    }
+    _getQuantityPositionInText(nameWithOptionalQuantity) {
+        if (/^x\d+\s/.test(nameWithOptionalQuantity)) {
+            return 'start';
+        } else if (/\sx\d+$/.test(nameWithOptionalQuantity)) {
+            return 'end';
+        }
+        return null;
     }
 }

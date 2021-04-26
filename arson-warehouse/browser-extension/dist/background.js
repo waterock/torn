@@ -140,5 +140,5 @@ function errorWithFriendlyMessage(message) {
 }
 
 function getBaseUrl() {
-    return window.dev ? 'http://arsonwarehouse.loc' : 'https://arsonwarehouse.com';
+    return window.dev ? 'http://localhost:8083' : 'https://arsonwarehouse.com';
 }
