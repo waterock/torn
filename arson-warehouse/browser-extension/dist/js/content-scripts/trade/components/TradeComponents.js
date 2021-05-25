@@ -1,7 +1,13 @@
 global.Vue.component('TradeComponents', {
     template: `
 <div class="trade-components">
-    <a v-if="allowUserToReturnToOverview" href="#" class="back-to-overview-button" @click.prevent="$emit('back-to-overview-button-clicked')">&laquo; Back to overview</a>
+    <a
+        v-if="allowUserToReturnToOverview" 
+        href="#" 
+        class="back-to-overview-button" 
+        @click.prevent="$emit('back-to-overview-button-clicked')"
+    >&laquo; {{ hasCustomPrices ? 'Save and return' : 'Return to overview' }}</a>
+    
     <table class="trade-components-table">
         <thead>
             <tr>
@@ -16,6 +22,8 @@ global.Vue.component('TradeComponents', {
             is="trade-component"
             :key="component.name"
             :component="component"
+            :price="priceByKey[component.key]"
+            @price-updated="price => $emit('component-price-updated', component.key, price)"
         />
         </tbody>
         <tfoot>
@@ -25,6 +33,12 @@ global.Vue.component('TradeComponents', {
         </tfoot>
     </table>
 </div>`,
-    props: ['components', 'grandTotal', 'allowUserToReturnToOverview'],
+    props: {
+        hasCustomPrices: Boolean,
+        components: Array,
+        priceByKey: Object,
+        grandTotal: Number,
+        allowUserToReturnToOverview: Boolean,
+    },
     mixins: [vueMixins.formatCurrency],
 });

@@ -4,6 +4,7 @@ chrome.management.getSelf((extensionInfo) => {
 });
 
 window.messageHandlers = new Map();
+window.thisTab = null;
 
 chrome.runtime.onMessage.addListener((message) => {
     // This is a generic listener for messages from content-scripts. Use the Set window.messageHandlers to add handlers.
@@ -15,6 +16,8 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 chrome.browserAction.onClicked.addListener(async (tab) => {
+    window.thisTab = tab;
+
     if (tab.url.indexOf('trade.php') === -1) {
         showAlertInTab(tab, 'ArsonWarehouse shows you the total value for a trade.\n\nView a trade and then press this button.');
         return;
@@ -36,6 +39,26 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
 
 window.messageHandlers.set('received-equipment-report', (message) => sendEquipmentReportToArsonWarehouse(message.payload));
 window.messageHandlers.set('obtained-foreign-stock', (message) => sendForeignStockReportToArsonWarehouse(message.payload));
+
+window.messageHandlers.set('save-custom-prices', async ({ payload }) => {
+    const { tradeId, priceByKey } = payload;
+
+    const response = await fetch(getBaseUrl() + `/api/v1/trades/${tradeId}/custom-prices`, {
+        method: 'post',
+        body: JSON.stringify({
+            plugin_version: chrome.runtime.getManifest().version,
+            price_by_key: priceByKey,
+        }),
+    });
+    const responseJson = await response.json();
+
+    chrome.tabs.sendMessage(window.thisTab.id, {
+        action: 'did-save-custom-prices',
+        payload: {
+            copyable_messages: responseJson.copyable_messages,
+        },
+    });
+});
 
 function isModalAlreadyOpen(tab) {
     return new Promise((resolve) => {
