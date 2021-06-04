@@ -19,7 +19,7 @@ global.Vue.component('TradeMessage', {
     computed: {
         messageBodyWithClickableReceiptLink() {
             const messageBody = this.escape(this.message.body);
-            return messageBody.replace(/(https?:\/\/arsonwarehouse.(loc|com)\/trades\/[0-9a-f]+)/, '<a href="$1" target="_blank" rel="noopener noreferrer" class="receipt-link">$1</a>');
+            return messageBody.replace(/(https?:\/\/(localhost:8083|arsonwarehouse\.com)\/trades\/[0-9a-f]+)/, '<a href="$1" target="_blank" rel="noopener noreferrer" class="receipt-link">$1</a>');
         },
     },
     methods: {
