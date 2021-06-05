@@ -31,7 +31,7 @@ global.Vue.component('TradeModal', {
                 :components="trade.components"
                 :price-by-key="priceByKey"
                 :grand-total="grandTotal"
-                :allow-user-to-return-to-overview="tradeValueResponse.requested_by_buyer"
+                :read-only="!tradeValueResponse.requested_by_buyer"
                 @component-price-updated="(key, price) => priceByKey[key] = price"
                 @back-to-overview-button-clicked="setMode('overview')"
             />

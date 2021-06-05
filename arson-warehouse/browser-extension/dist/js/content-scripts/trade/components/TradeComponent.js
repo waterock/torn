@@ -10,22 +10,26 @@ global.Vue.component('TradeComponent', {
         </template>
     </td>
     <td class="trade-component-unit-price">
-        <div>
+        <template v-if="readOnly">
+            {{ formatCurrency(price) }}
+        </template>
+        <template v-else>
             <a v-if="!editing" href="#" @click.prevent="editing = true">{{ formatCurrency(component.regular_price) }}</a>
             <input v-else style="text-align:right" type="number" step="1" :value="price" @input="updatePrice">
-        </div>
+        </template>
     </td>
     <td class="trade-component-quantity">{{ component.quantity }}</td>  
     <td class="trade-component-total-price">{{ formatCurrency(component.quantity * price) }}</td>
 </tr>`,
     props: {
+        readOnly: Boolean,
         component: Object,
         price: Number,
     },
     mixins: [vueMixins.formatCurrency],
     data() {
         return {
-            editing: this.price !== this.component.regular_price,
+            editing: !this.readOnly && this.price !== this.component.regular_price,
         };
     },
     methods: {

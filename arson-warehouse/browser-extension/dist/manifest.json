@@ -15,11 +15,6 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://www.torn.com/*"],
-      "js": ["js/content-scripts/torn/torn.js"],
-      "run_at": "document_end"
-    },
-    {
       "matches": ["https://www.torn.com/trade.php*"],
       "css": ["awh.css"],
       "js": [
@@ -41,9 +36,6 @@
         "js/content-scripts/trade/trade.js"
       ]
     }
-  ],
-  "web_accessible_resources": [
-    "js/page-scripts/collect-equipment-stats.js"
   ],
   "browser_action": {
   },

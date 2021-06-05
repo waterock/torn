@@ -2,7 +2,7 @@ global.Vue.component('TradeComponents', {
     template: `
 <div class="trade-components">
     <a
-        v-if="allowUserToReturnToOverview" 
+        v-if="!readOnly" 
         href="#" 
         class="back-to-overview-button" 
         @click.prevent="$emit('back-to-overview-button-clicked')"
@@ -21,6 +21,7 @@ global.Vue.component('TradeComponents', {
         <tr v-for="component of components"
             is="trade-component"
             :key="component.name"
+            :read-only="readOnly"
             :component="component"
             :price="priceByKey[component.key]"
             @price-updated="price => $emit('component-price-updated', component.key, price)"
@@ -38,7 +39,7 @@ global.Vue.component('TradeComponents', {
         components: Array,
         priceByKey: Object,
         grandTotal: Number,
-        allowUserToReturnToOverview: Boolean,
+        readOnly: Boolean,
     },
     mixins: [vueMixins.formatCurrency],
 });

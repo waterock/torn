@@ -37,9 +37,6 @@ chrome.browserAction.onClicked.addListener(async (tab) => {
     }
 });
 
-window.messageHandlers.set('received-equipment-report', (message) => sendEquipmentReportToArsonWarehouse(message.payload));
-window.messageHandlers.set('obtained-foreign-stock', (message) => sendForeignStockReportToArsonWarehouse(message.payload));
-
 window.messageHandlers.set('save-custom-prices', async ({ payload }) => {
     const { tradeId, priceByKey } = payload;
 
@@ -127,26 +124,6 @@ function emitTradeValueResponse(tab, tradeValueResponse) {
     chrome.tabs.sendMessage(tab.id, {
         action: 'did-get-trade-value-response',
         payload: tradeValueResponse,
-    });
-}
-
-function sendEquipmentReportToArsonWarehouse(report) {
-    return fetch(getBaseUrl() + '/api/v1/equipment-reports', {
-        headers: new Headers({
-            Authorization: 'Basic ' + btoa(`${report.reporterId}:`),
-        }),
-        method: 'post',
-        body: JSON.stringify(report.equipment),
-    });
-}
-
-function sendForeignStockReportToArsonWarehouse(report) {
-    return fetch(getBaseUrl() + '/api/v1/foreign-stock-reports', {
-        headers: new Headers({
-            Authorization: 'Basic ' + btoa(`${report.reporterId}:`),
-        }),
-        method: 'post',
-        body: JSON.stringify(report),
     });
 }
 
