@@ -27,7 +27,7 @@ global.Vue.component('TradeModal', {
             />
             <trade-components
                 v-if="mode === 'components'"
-                :has-custom-prices="hasCustomPrices"
+                :has-unsaved-prices="hasUnsavedPrices"
                 :components="trade.components"
                 :price-by-key="priceByKey"
                 :grand-total="grandTotal"
@@ -56,12 +56,12 @@ global.Vue.component('TradeModal', {
             }
             return this.tradeValueResponse.trade || null;
         },
-        hasCustomPrices() {
+        hasUnsavedPrices() {
             if (this.loading || Object.entries(this.priceByKey).length === 0) {
                 return false;
             }
-            return this.trade.components.some(({ key, regular_price }) => {
-                return regular_price !== this.priceByKey[key];
+            return this.trade.components.some(({ key, applied_price }) => {
+                return applied_price !== this.priceByKey[key];
             });
         },
         messages() {
@@ -95,7 +95,10 @@ global.Vue.component('TradeModal', {
 
             if (this.mode === 'overview' && this.customPricesNeedSaving) {
                 const response = await this.saveCustomPrices();
+
+                this.tradeValueResponse.trade.components = response.trade_components;
                 this.tradeValueResponse.copyable_messages = response.copyable_messages;
+
                 this.persistedPriceByKey = { ...this.priceByKey };
             }
         },
@@ -128,7 +131,7 @@ global.Vue.component('TradeModal', {
     watch: {
         tradeValueResponse() {
             for (let component of this.tradeValueResponse.trade.components) {
-                const price = component.custom_price || component.regular_price;
+                const price = component.custom_price || component.auto_price;
                 this.$set(this.priceByKey, component.key, price);
                 this.$set(this.persistedPriceByKey, component.key, price);
             }

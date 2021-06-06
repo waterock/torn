@@ -51,9 +51,7 @@ window.messageHandlers.set('save-custom-prices', async ({ payload }) => {
 
     chrome.tabs.sendMessage(window.thisTab.id, {
         action: 'did-save-custom-prices',
-        payload: {
-            copyable_messages: responseJson.copyable_messages,
-        },
+        payload: responseJson,
     });
 });
 

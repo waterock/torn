@@ -5,7 +5,7 @@ global.Vue.component('TradeComponent', {
         {{ component.name }}
         <template v-if="editing">
             <div style="font-size:.8rem">
-                regular price: <a href="#" @click.prevent="revertToRegularPrice">{{ formatCurrency(component.regular_price) }}</a>
+                original price: <a href="#" @click.prevent="revertToAutoPrice">{{ formatCurrency(component.auto_price) }}</a>
             </div>
         </template>
     </td>
@@ -14,7 +14,7 @@ global.Vue.component('TradeComponent', {
             {{ formatCurrency(price) }}
         </template>
         <template v-else>
-            <a v-if="!editing" href="#" @click.prevent="editing = true">{{ formatCurrency(component.regular_price) }}</a>
+            <a v-if="!editing" href="#" @click.prevent="editing = true">{{ formatCurrency(component.auto_price) }}</a>
             <input v-else style="text-align:right" type="number" step="1" :value="price" @input="updatePrice">
         </template>
     </td>
@@ -29,16 +29,16 @@ global.Vue.component('TradeComponent', {
     mixins: [vueMixins.formatCurrency],
     data() {
         return {
-            editing: !this.readOnly && this.price !== this.component.regular_price,
+            editing: !this.readOnly && this.price !== this.component.auto_price,
         };
     },
     methods: {
         updatePrice(event) {
             this.$emit('price-updated', +event.target.value);
         },
-        revertToRegularPrice() {
+        revertToAutoPrice() {
             this.editing = false;
-            this.$emit('price-updated', this.component.regular_price);
+            this.$emit('price-updated', this.component.auto_price);
         }
     },
 });

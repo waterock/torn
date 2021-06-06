@@ -6,7 +6,7 @@ global.Vue.component('TradeComponents', {
         href="#" 
         class="back-to-overview-button" 
         @click.prevent="$emit('back-to-overview-button-clicked')"
-    >&laquo; {{ hasCustomPrices ? 'Save and return' : 'Return to overview' }}</a>
+    >&laquo; {{ hasUnsavedPrices ? 'Save and return' : 'Return to overview' }}</a>
     
     <table class="trade-components-table">
         <thead>
@@ -35,7 +35,7 @@ global.Vue.component('TradeComponents', {
     </table>
 </div>`,
     props: {
-        hasCustomPrices: Boolean,
+        hasUnsavedPrices: Boolean,
         components: Array,
         priceByKey: Object,
         grandTotal: Number,
