@@ -43,7 +43,6 @@ global.Vue.component('TradeModal', {
         return {
             mode: null,
             priceByKey: {},
-            persistedPriceByKey: {},
         };
     },
     computed: {
@@ -82,9 +81,6 @@ global.Vue.component('TradeModal', {
 
             return total;
         },
-        customPricesNeedSaving() {
-            return JSON.stringify(this.priceByKey) !== JSON.stringify(this.persistedPriceByKey);
-        },
     },
     methods: {
         async setMode(mode) {
@@ -93,13 +89,17 @@ global.Vue.component('TradeModal', {
             }
             this.mode = mode;
 
-            if (this.mode === 'overview' && this.customPricesNeedSaving) {
+            if (this.mode === 'overview' && this.hasUnsavedPrices) {
                 const response = await this.saveCustomPrices();
 
-                this.tradeValueResponse.trade.components = response.trade_components;
-                this.tradeValueResponse.copyable_messages = response.copyable_messages;
-
-                this.persistedPriceByKey = { ...this.priceByKey };
+                this.tradeValueResponse = {
+                    ...this.tradeValueResponse,
+                    trade: {
+                        ...this.tradeValueResponse.trade,
+                        components: response.trade.components,
+                    },
+                    copyable_messages: response.copyable_messages,
+                };
             }
         },
         saveCustomPrices() {
@@ -122,7 +122,7 @@ global.Vue.component('TradeModal', {
             })
         },
         tryCloseModal() {
-            if (this.customPricesNeedSaving && !window.confirm('Price changes will be lost. Really close?')) {
+            if (this.hasUnsavedPrices && !window.confirm('Price changes will be lost. Really close?')) {
                 return;
             }
             this.$emit('close')
@@ -133,7 +133,6 @@ global.Vue.component('TradeModal', {
             for (let component of this.tradeValueResponse.trade.components) {
                 const price = component.custom_price || component.auto_price;
                 this.$set(this.priceByKey, component.key, price);
-                this.$set(this.persistedPriceByKey, component.key, price);
             }
 
             if (this.tradeValueResponse.requested_by_buyer) {
