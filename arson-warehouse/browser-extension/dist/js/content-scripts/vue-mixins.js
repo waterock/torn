@@ -28,5 +28,12 @@ const vueMixins = {
                 return '$' + value.toLocaleString('en-US');
             }
         }
+    },
+    nl2br: {
+        methods: {
+            nl2br(value) {
+                return value.replace(/\n/g, '<br>');
+            }
+        }
     }
 };

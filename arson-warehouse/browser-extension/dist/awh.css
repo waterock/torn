@@ -86,9 +86,25 @@ html.awh-modal-is-open {
 .awh-trade-value-modal .loading-trade-value {
   text-align: center;
 }
+.awh-trade-value-modal .announcement {
+  border: 1px solid #b6d4fe;
+  background-color: #cfe2ff;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.7rem 1rem;
+  color: #084298;
+  font-size: 0.9rem;
+  line-height: 1.2rem;
+}
+.awh-trade-value-modal .dismiss-announcement-button-wrapper {
+  text-align: right;
+}
+.awh-trade-value-modal .dismiss-announcement-button-wrapper a {
+  color: #084298;
+}
 .awh-trade-value-modal .trade-warnings {
-  border: 2px solid #F3C359;
-  background-color: #FFFBF2;
+  border: 1px solid #ffecb5;
+  background-color: #fff3cd;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
 }
@@ -97,7 +113,7 @@ html.awh-modal-is-open {
   padding: 0.7rem 1rem 0.7rem 2rem;
 }
 .awh-trade-value-modal .trade-warnings ul li {
-  color: #81621D;
+  color: #664d03;
   margin: 0.3rem 0;
   font-size: 0.9rem;
   line-height: 1.2rem;

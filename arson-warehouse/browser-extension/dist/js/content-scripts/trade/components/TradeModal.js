@@ -23,6 +23,7 @@ global.Vue.component('TradeModal', {
                 :grand-total="grandTotal"
                 :messages="messages"
                 :has-custom-copyable-messages="tradeValueResponse.has_custom_copyable_messages"
+                :latest-unread-announcement="tradeValueResponse.latest_unread_announcement"
                 @view-components-button-clicked="setMode('components')"
             />
             <trade-components

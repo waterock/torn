@@ -55,6 +55,10 @@ window.messageHandlers.set('save-custom-prices', async ({ payload }) => {
     });
 });
 
+window.messageHandlers.set('dismiss-announcement', ({ payload }) => {
+    fetch(getBaseUrl() + `/api/v1/trades/${payload.tradeId}/dismiss-announcements`, { method: 'post' });
+});
+
 function isModalAlreadyOpen(tab) {
     return new Promise((resolve) => {
         window.messageHandlers.set('did-check-is-modal-already-open', (message) => resolve(message.payload));

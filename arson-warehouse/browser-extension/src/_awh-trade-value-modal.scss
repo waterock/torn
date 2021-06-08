@@ -5,9 +5,28 @@ $copy-highlight-color: #f9f68b;
         text-align: center;
     }
 
+    .announcement {
+        border: 1px solid #b6d4fe;
+        background-color: #cfe2ff;
+        border-radius: .5rem;
+        margin-bottom: 1rem;
+        padding: .7rem 1rem;
+        color: #084298;
+        font-size: .9rem;
+        line-height: 1.2rem;
+    }
+
+    .dismiss-announcement-button-wrapper {
+        text-align: right;
+
+        a {
+            color: #084298;
+        }
+    }
+
     .trade-warnings {
-        border: 2px solid #F3C359;
-        background-color: #FFFBF2;
+        border: 1px solid #ffecb5;
+        background-color: #fff3cd;
         border-radius: .5rem;
         margin-bottom: 1rem;
 
@@ -16,7 +35,7 @@ $copy-highlight-color: #f9f68b;
             padding: .7rem 1rem .7rem 2rem;
 
             li {
-                color: #81621D;
+                color: #664d03;
                 margin: .3rem 0;
                 font-size: .9rem;
                 line-height: 1.2rem;
