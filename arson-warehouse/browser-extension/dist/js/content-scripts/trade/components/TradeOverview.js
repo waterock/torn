@@ -5,7 +5,7 @@ global.Vue.component('TradeOverview', {
     <div v-if="latestUnreadAnnouncement && !announcementDismissed" class="announcement">
         <div v-html="nl2br(latestUnreadAnnouncement.html)"></div>
         <div class="dismiss-announcement-button-wrapper">
-            <a href="#" @click.prevent="dismissAnnouncement">don't show again</a>
+            <a href="#" @click.prevent="dismissAnnouncement">Don't show again</a>
         </div>
     </div>
 
@@ -28,6 +28,7 @@ global.Vue.component('TradeOverview', {
                 action: 'dismiss-announcement',
                 payload: {
                     tradeId: this.tradeId,
+                    announcementId: this.latestUnreadAnnouncement.id,
                 },
             });
         }

@@ -118,6 +118,14 @@ $copy-highlight-color: #f9f68b;
                 &:nth-child(odd) {
                     background-color: #f4f4f4;
                 }
+
+                input {
+                    transition: box-shadow .25s;
+
+                    &:focus {
+                        box-shadow: 0 0 0 4px rgba(21, 156, 228, 0.4);
+                    }
+                }
             }
 
             .trade-component-quantity {

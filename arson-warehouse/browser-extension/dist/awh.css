@@ -180,6 +180,12 @@ html.awh-modal-is-open {
 .awh-trade-value-modal .trade-components .trade-components-table .trade-component:nth-child(odd) {
   background-color: #f4f4f4;
 }
+.awh-trade-value-modal .trade-components .trade-components-table .trade-component input {
+  transition: box-shadow 0.25s;
+}
+.awh-trade-value-modal .trade-components .trade-components-table .trade-component input:focus {
+  box-shadow: 0 0 0 4px rgba(21, 156, 228, 0.4);
+}
 .awh-trade-value-modal .trade-components .trade-components-table .trade-component-quantity {
   text-align: right;
 }

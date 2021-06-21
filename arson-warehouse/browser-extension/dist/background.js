@@ -56,7 +56,12 @@ window.messageHandlers.set('save-custom-prices', async ({ payload }) => {
 });
 
 window.messageHandlers.set('dismiss-announcement', ({ payload }) => {
-    fetch(getBaseUrl() + `/api/v1/trades/${payload.tradeId}/dismiss-announcements`, { method: 'post' });
+    const { tradeId, announcementId } = payload;
+
+    fetch(getBaseUrl() + `/api/v1/trades/${tradeId}/dismiss-announcements`, {
+        method: 'post',
+        body: JSON.stringify({ announcementId }),
+    });
 });
 
 function isModalAlreadyOpen(tab) {

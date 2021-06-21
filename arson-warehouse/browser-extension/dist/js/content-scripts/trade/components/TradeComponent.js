@@ -14,8 +14,8 @@ global.Vue.component('TradeComponent', {
             {{ formatCurrency(price) }}
         </template>
         <template v-else>
-            <a v-if="!editing" href="#" @click.prevent="editing = true">{{ formatCurrency(component.auto_price) }}</a>
-            <input v-else style="text-align:right" type="number" step="1" :value="price" @input="updatePrice">
+            <a v-if="!editing" href="#" @click.prevent="startEditing">{{ formatCurrency(component.auto_price) }}</a>
+            <input v-else ref="input" style="text-align:right" type="number" step="1" :value="price" @input="updatePrice">
         </template>
     </td>
     <td class="trade-component-quantity">{{ component.quantity }}</td>  
@@ -33,6 +33,10 @@ global.Vue.component('TradeComponent', {
         };
     },
     methods: {
+        startEditing() {
+            this.editing = true;
+            this.$nextTick(() => this.$refs.input.focus());
+        },
         updatePrice(event) {
             this.$emit('price-updated', +event.target.value);
         },
